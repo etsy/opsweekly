@@ -1,0 +1,204 @@
+<?php
+
+include_once("phplib/base.php");
+
+$my_username = getUsername();
+
+$page_title = getTeamName() . " Weekly Updates - Your profile";
+include_once('phplib/header.php');
+include_once('phplib/nav.php');
+
+?>
+
+<div class="container">
+
+<?php
+
+if (!$profile = checkForUserProfile($my_username)) {
+    echo insertNotify("info", "Welcome to your profile page! Please <a href='/edit_profile.php'>edit your profile</a>");
+    $profile = null;
+} else {
+    $sleeptracking_settings = json_decode($profile['sleeptracking_settings'], 1);
+}
+
+// Welcome the user either with their full name, or their username.
+$name = ($profile['full_name'] != "") ? explode(" ", $profile['full_name'])[0] : $my_username;
+echo "<h1>Hello {$name} <small>viewing your profile</small></h1>";
+
+// Count the number of weekly updates for the summary
+if (!$updates = getGenericWeeklyReportsForUser($my_username)) {
+    $num_weekly = "no";
+} else {
+    $num_weekly = count($updates);
+}
+
+// Get the oncall ranges for this user for their stats, and for the summary.
+if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
+    $oncall = false;
+} else {
+    $oncall = true;
+    $num_oncall = count($oncall_ranges);
+    $sleep_status_agg = array();
+    $tag_agg_norm = array();
+    $mtts_total = 0;
+    $top_wakeup_cause = array();
+    $tag_graph_data[] = array("Week", "Action Taken", "No Action Taken");
+
+    // Create summary metrics about this person's on call
+    foreach ($oncall_ranges as $week) {
+        $results = getOnCallReportForWeek($week['range_start'], $week['range_end']);
+        $personal_notifications = $personal_notifications + count($results);
+        $week_tag_summary = array("action" => 0, "noaction" => 0);
+
+        // Deep notification loop
+        foreach ($results as $n) {
+            $tag_agg_norm[$nagios_tag_category_map[$n['tag']]]++;
+            $week_tag_summary[$nagios_tag_category_map[$n['tag']]]++;
+
+            // Sleep status tracking
+            $sleep_status_agg[$n['sleep_state']]++;
+            if ($n['mtts'] > -1 && $n['sleep_state'] > 0) {
+                $mtts_total = $mtts_total + $n['mtts'];
+                $top_wakeup_cause[$n['service']]++;
+                $sleep = true;
+            }
+
+            // Bit of a hack that takes the hour and minute of the notification and adds it to todays
+            // date so we can use it in the timemap. 
+            $timemap_hourmin = date('H:i', $n['timestamp']); 
+            $timemap_const = DateTime::createFromFormat("Ymd H:i", date("Ymd")." {$timemap_hourmin}");
+            $timemap_data[$timemap_const->format('U')]++;
+        }
+        $tag_graph_data[] = array(date("j M y", $week['range_start']), $week_tag_summary["action"], $week_tag_summary["noaction"]);
+
+    }
+    if ($sleep) {
+        $my_wake_ups_pct = ($sleep_status_agg[1] / ($sleep_status_agg[1] + $sleep_status_agg[0]))*100;
+        $mtts = round( ($mtts_total / $sleep_status_agg[1]) / 60, 2);
+    }
+    $personal_per_week = round($personal_notifications / $num_oncall, 2);
+    $my_noaction_pct = ($tag_agg_norm['noaction'] / ($tag_agg_norm['noaction'] + $tag_agg_norm['action']))*100;
+
+    // Get metrics for all on calls for the last year for comparison
+    $weeks = getAvailableOnCallRangesForLastYear();
+    $total_weeks = count($weeks);
+    $all_sleep_status_agg = array();
+    $all_tag_agg_norm = array();
+    $all_mtts_total = 0;
+
+    foreach ($weeks as $week) {
+        $results = getOnCallReportForWeek($week['range_start'], $week['range_end']);
+        $total_notifications = $total_notifications + count($results);
+
+        // Deep notification loop
+        foreach ($results as $n) {
+            // Sleep status tracking
+            $all_sleep_status_agg[$n['sleep_state']]++;
+            $all_tag_agg_norm[$nagios_tag_category_map[$n['tag']]]++;
+            if ($n['mtts'] > -1 && $n['sleep_state'] > 0) {
+                $all_mtts_total = $all_mtts_total + $n['mtts'];
+            }
+        }
+
+    }
+    $all_wake_ups_pct = ($all_sleep_status_agg[1] / ($all_sleep_status_agg[1] + $all_sleep_status_agg[0]))*100;
+    $total_per_week = round($total_notifications / $total_weeks, 2);
+    $all_mtts = round ( ($all_mtts_total / $all_sleep_status_agg[1]) / 60, 2);
+    $all_noaction_pct = ($all_tag_agg_norm['noaction'] / ($all_tag_agg_norm['noaction'] + $all_tag_agg_norm['action']))*100;
+
+    $per_week_diff = $total_per_week - $personal_per_week;
+    $per_week_diff = ($total_per_week > $personal_per_week) ?
+        "<span class='text-success'><i class='icon-arrow-up'></i> $per_week_diff better off</span>" :
+        "<span class='text-error'><i class='icon-arrow-down'></i> $per_week_diff worse off</span>";
+
+    if ($profile && $profile['sleeptracking_provider'] != "none" && $profile['sleeptracking_provider'] != "") {
+        $sleep_tracking = true;
+        $sleep_name = $sleep_providers[$profile['sleeptracking_provider']]['display_name'];
+        $sleep_logo = $sleep_providers[$profile['sleeptracking_provider']]['logo'];
+    }
+}
+
+?>
+
+<style>
+    .stats li { margin: 0.6em }
+</style>
+<div class="row">
+    <div class="span12">
+        <h2>Your Summary</h2>
+        <p class='lead'>You've submitted <a href="/user_updates.php"><?= $num_weekly ?> weekly reports</a>
+        <? if ($oncall) { ?>
+            and <?= $num_oncall ?> on call reports</p>
+        <h3>On Call</h3>
+        <?php if ($sleep_tracking) { ?>
+        <h4>Sleep</h4>
+        <ul class='stats lead'>
+        <li>You're using sleep tracking from  <img src="<?= $sleep_logo ?>"> <strong><?= $sleep_name ?></strong></li>
+        <li>You've been woken up an average of <strong><?= round($sleep_status_agg[1] / $num_oncall, 1) ?> times per week</strong>
+            and have lost a total of <strong><?= round( $mtts_total / 60 / 60, 1) ?> hours of sleep</strong> to notifications</li>
+        <li>That's an average of <strong><?= round ( ($mtts_total / $num_oncall) / 60 / 60, 1) ?> hours sleep lost per week</strong> 
+            due to notifications (<?= round ( ($all_mtts_total / $total_weeks) / 60 / 60, 1)  ?> hours globally)</li>
+        <li><strong><?= round($my_wake_ups_pct, 1) ?>%</strong> of notifications have woken you up, 
+            compared to the average of <?= round($all_wake_ups_pct, 1) ?>%</li>
+        <li>The service that woke you up the most was <strong>'<?= array_search(max($top_wakeup_cause), $top_wakeup_cause)  ?>'
+            </strong> which it did <?= max($top_wakeup_cause); ?> times</li>
+        <li>Your <strong>Mean Time To Sleep is <?= $mtts ?> minutes</strong> compared to an average from all users of 
+            <?= $all_mtts ?> minutes</li>
+        </ul>
+        <? } ?>
+        <h4>Notifications</h4>
+        <ul class='stats lead'>
+        <li>You've had a total of <?= $personal_notifications ?> notifications across <?= $num_oncall ?> weeks, giving an
+            average of <strong><?= $personal_per_week ?> alerts per week</strong>. </li>
+        <li>This compares to an average of <?= $total_per_week ?> per week in total in the last year, 
+            leaving you <strong><?= $per_week_diff ?></strong></li>
+        <li>You tagged <strong><?= round($my_noaction_pct, 2) ?>% of alerts 'no action taken'</strong> compared to 
+            <?= round($all_noaction_pct, 2) ?>% globally. </li>
+        </ul>
+        <br />
+        <h4>Personal Notification Time Map</h4>
+            <p>This illustrates the hours of the day you recieved notifications during your on call periods. </p>
+            <div id="cal-heatmap"></div>
+            <script type="text/javascript">
+            var time_data = <?php echo json_encode($timemap_data) ?>;
+
+            var cal = new CalHeatMap();
+            cal.init({
+                data: time_data,
+                domain : "hour",
+                start: new Date(<?php echo date("U", strtotime("today")) ?>*1000),
+                subDomain : "min",
+                range : 24,
+                cellsize: 6,
+                cellpadding: 1,
+                domainGutter: 1,
+                itemName: ["notification", "notifications"],
+                format: { date: "%H:%M", legend: "%H:%M" },
+            });
+            </script>
+        <br />
+        <h4>Your on calls at a glance</h4>
+            <div id="alert_tags_chart"></div>
+            <br />
+
+            <script type="text/javascript">
+                var data = google.visualization.arrayToDataTable(<?php echo json_encode($tag_graph_data) ?>);
+
+                var options = {
+                    hAxis: { title: 'Week Commencing' },
+                    vAxis: { title: 'Number of notifications' }
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('alert_tags_chart'));
+                chart.draw(data, options);
+            </script>
+
+            <div id="alert_tags_pct_chart"></div>
+
+        <br />
+        <? } ?>
+    </div>
+</div>
+<?php include_once('phplib/footer.php'); ?>
+</body>
+</html>
