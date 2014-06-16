@@ -17,7 +17,7 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 	* Free notes field to allow documentation of actions taken to refer back to later
 	* Bulk classification for time saving
 * **Sleep Tracking**: If your engineers have popular life tracking devices such as Fitbit or Jawbone UP, they integrate with Opsweekly to provide even more insight into the effect on call is having on their lives. 
-	* Mean time to sleep and sleep time lost to notifications are calculated.
+	* Mean time to sleep (MTTS) and sleep time lost to notifications are calculated.
 	* Easy to configure but gives valuable data that could lead to questions like "can this alert wait until morning as it keeps waking up our engineers?"
 * **In depth reporting**: As you start to build up data, Opsweekly starts to generate reports and graphs illustrating your on call rotations. 
 	* Examples include: action taken vs no action taken on alerts, what alerts wake people up the most, mean time to sleep, top notifying hosts/services, average alert volume per day, and how on call has improved (or not) over the last year
@@ -34,9 +34,11 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 	* Search previous on call alerts for a history of that alert, previous engineer's notes, how the alerts were classified (is this alert constantly "no action taken?") and a time map showing it's frequency over the past year. 
 	* Search Weekly Updates for full context on changes made previously
 	* Search Meeting Notes for agenda items discussed in previous meetings
+* **Fully timezone aware**: Obviously it's important for users to be editing the alerts they receive in the timezone that they received them in. Each user can set their own timezone for the whole Opsweekly UI.
+* **Fill in as you go**: Both the Weekly report and the On-call reports can be updated to multiple times during the week, so the user does not have to edit a hefty report at the end. 
 
 ## Screenshots
-
+### Please visit the [screenshot README](screenshots/README.md) for a guided tour of how Opsweekly works and the reports it can generate!
 
 
 ## Prerequisites
@@ -176,6 +178,9 @@ There are a few other configuration options, which are documented in the example
 * `$dev_fqdn`, `$prod_fqdn`: To allow ease of development, Opsweekly will preg_replace the hostname given to it to another hostname (which then matches your team names in the `$teams` array). 
 * `$irccat_hostname`, `$irccat_port`: If you use irccat and wish to use meeting reminders, and have them appear in IRC, you will need to configure the hostname and port your irccat instance runs at here. 
 
+## A note on on-call classification and categorisation
+
+
 ## Setting up meeting reminders
 You can have opsweekly automatically email and IRC message you to remind you about meeting time, and provide the permalink to this week's meeting for convenience. 
 
@@ -190,3 +195,4 @@ e.g., using cron, weekly at 2pm:
 * As the name implies, Opsweekly is rather tied to the concept of a week. In theory the database stores time ranges, but the UI is all based on a week's worth of data
    * At some point I invisage dropping the concept of a fixed time period and instead having "providers" that pull the periods people were on call, prompting them to fill in the data. E.g. Pagerduty: You were on call from X to Y, please categorise your alerts for that period. 
 * The code quality is not that high. I only just started using PHP classes for various bits. Contributions definitely welcome. 
+* Whilst users can fill in their weekly report and on call report as the week continues, two people cannot edit the same on call report otherwise duplicate events may appear in the reports. This is due to the timestamp being part of the unique key for alerts. 
