@@ -35,7 +35,7 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 	* Search Weekly Updates for full context on changes made previously
 	* Search Meeting Notes for agenda items discussed in previous meetings
 * **Fully timezone aware**: Obviously it's important for users to be editing the alerts they receive in the timezone that they received them in. Each user can set their own timezone for the whole Opsweekly UI.
-* **Fill in as you go**: Both the Weekly report and the On-call reports can be updated to multiple times during the week, so the user does not have to edit a hefty report at the end. 
+* **Fill in as you go/drafts**: Both the Weekly report and the On-call reports can be updated to multiple times during the week, so the user does not have to edit a hefty report at the end. 
 
 ## Screenshots
 ### Please visit the [screenshot README](screenshots/README.md) for a guided tour of how Opsweekly works and the reports it can generate!
@@ -179,6 +179,44 @@ There are a few other configuration options, which are documented in the example
 * `$irccat_hostname`, `$irccat_port`: If you use irccat and wish to use meeting reminders, and have them appear in IRC, you will need to configure the hostname and port your irccat instance runs at here. 
 
 ## A note on on-call classification and categorisation
+One of Opsweekly's core goals is to try and assist with thinking deeply about on call rotations and the notifications received during them. 
+
+A big part of this is requiring the on call engineer to categorise every alert they receive. If they receive 50+, this can be a daunting task. 
+
+We spent a long time trying to come up with a good balance of concise options to choose from, that provided a sufficient amount of detail but at the same time didn't overwhelm the user. 
+
+This is the list that we came up with:
+
+---
+
+### Two types: Action/No Action
+The main thing we wanted to record was whether an alert was actionable, or not actionable (e.g. was there a genuine problem that affected service of the system that the user had to intervene to fix)
+
+Therefore, the alert categorisations are broken down into those two categories. 
+
+#### Action Taken Tags
+The following are "Action Taken" tags, and their brief description:
+
+* Service Issue (View Clean): The service was affected, and this alert correctly saw the issue and alerted on it
+* Service Issue (timeperiod inappropriate, view clean): There was an issue but it could've alerted during another timeperiod, e.g. it could've waited until morning. 
+* View Issue (network outage/site outage, service health quesitonable): The service could've been okay or broken, but the monitoring system did not have a clear view of the system to say either way, but an alert was fired. 
+	* Most common use for this is a cascading failure/alert storm due to network outage with no parents setup
+	
+
+#### No Action Taken Tags
+The following are "No Action Taken" tags, and their brief description:
+
+* Time period inappropriate: This alert should go off during a different time period, e.g. during the waking hours
+* Work ongoing, downtime expired: Known work is occuring on this system, but the downtime/alert supression expired
+* Work ongoing, downtime not set: Known work is occuring on this system, but downtime/alert supression was not set at all (e.g. by accident)
+* Threshold adjustment required: An alert fired due to a misconfiguration of thresholds. The threshold should be adjusted. 
+* Check is faulty/requires modification: An alert fired because the check malfuctioned, needs to be redesigned or otherwise requires modification
+
+---
+
+More than once engineers have been somewhat baffled by these choices, and asked for another option; but actaully, in all those cases it ended up being covered by another choice. This is actually a good thing, as it forces everyone to think about the intitial cause of the alert, rather than things wrapped up around it. 
+
+Hopefully by using Opsweekly you can become very aware of the kind of alerts your engineers are receiving, and then work to reduce noise and only wake/context switch your intelligent humans to do jobs when they're really required to do so. 
 
 
 ## Setting up meeting reminders
