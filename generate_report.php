@@ -240,6 +240,8 @@ if ($report_type == "week") {
         $year_tag_total = array();
         $year_top_host_agg = array();
         $year_top_service_agg = array();
+        $year_top_waking_service = array();
+        $year_top_waking_host = array();
         $year_time_counts = array();
         $year_status_agg_total = 0;
         $year_tag_agg_total = 0;
@@ -305,6 +307,9 @@ if ($report_type == "week") {
                         $year_mtts_total = $year_mtts_total + $n['mtts'];
                         // Number of times person returned to sleep
                         $year_rtts_count++;
+                        // Keep a summary count in an array of the top waking hosts and services
+                        $year_top_waking_service[$n['service']]++;
+                        $year_top_waking_host[$n['hostname']]++;
                     }
                     if ($n['mtts'] == 0 && $n['sleep_state'] > 0) {
                         // This indicates a 'no back to sleep' situation after an awakening
@@ -431,6 +436,18 @@ if ($report_type == "week") {
         ?>
         </tbody>
         </table>
+        <?php if (count($year_top_waking_host) > 1) {
+            arsort($year_top_waking_host);
+            $a = array_splice($year_top_waking_host, 0, 5);
+        ?>
+        <p>The top 5 hosts that woke people up were:
+            <?php foreach ($a as $k => $v) {
+                $strings[] = "<strong>{$k}</strong> ({$v} times)";
+            }
+            echo implode($strings, ", ");
+        ?>
+        </p>
+        <?php } ?>
 
         <h3>Top Notifying Services</h3>
         <p>Services that recieved the most notifications during this year</p>
@@ -451,6 +468,18 @@ if ($report_type == "week") {
         ?>
         </tbody>
         </table>
+        <?php if (count($year_top_waking_service) > 1) {
+            arsort($year_top_waking_service); $strings = '';
+            $a = array_splice($year_top_waking_service, 0, 5);
+        ?>
+        <p>The top 5 services that woke people up were:
+            <?php foreach ($a as $k => $v) {
+                $strings[] = "<strong>{$k}</strong> ({$v} times)";
+            }
+            echo implode($strings, ", ");
+        ?>
+        </p>
+        <?php } ?>
 
 
 
