@@ -10,6 +10,8 @@ require_once 'oncall.php';
 require_once 'irccat.php';
 require_once 'user_auth.php';
 require_once 'pagination.class.php';
+// report.php contains report rendering functions
+include_once("phplib/report.php");
 
 $pages = array("/index.php" => "Overview", "/add.php" => "Add", "/report.php" => "Reports", "/meeting.php" => "Meeting");
 $pages_icon = array("/index.php" => "icon-home", "/add.php" => "icon-plus-sign", "/report.php" => "icon-list-alt", "/meeting.php" => "icon-bullhorn");

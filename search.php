@@ -111,23 +111,12 @@ include_once('phplib/nav.php');
             if ($context == 'service' || $context == 'host') {
                 echo "<h3>Stats for these search results</h3>";
                 $stats_html = "<h4>Alert Status Distribution</h4>";
-                foreach ($status_agg as $type => $number) {
-                    $pct = round( ($number / $status_agg_total) * 100, 2);
-                    $html_status_summary .= "<span class='well well-small'><span class='label label-{$nagios_state_to_badge[$type]}'>{$type}</span>  {$number} ({$pct}%) </span>&nbsp;";
-                    $html_status_bar .= "<div class='bar bar-{$nagios_state_to_bar[$type]}' style='width: {$pct}%;'></div>";
-                }
-                $stats_html .= "<div class='progress input-xxlarge'>{$html_status_bar}</div><p>{$html_status_summary}</p><br />";
-
-                $stats_html .= "<h4>Tag Status Summary</h4><p>Breakdown of the tags applied to the notifications in this search</p><table class='table'>";
-                foreach ($tag_agg as $type => $number) {
-                    $pct = round( ($number / $tag_agg_total) * 100, 2);
-                    $stats_html .= "<tr><td><span class='label'>{$nagios_alert_tags[$type]}</span></td> <td> {$number} ({$pct}%) </td></tr>";
-                }
-                $stats_html .= "</table><p>Breakdown of the tags applied (normalised)</p><table class='table'>";
-                foreach ($tag_agg_normalised as $type => $number) {
-                    $pct = round( ($number / $tag_agg_total) * 100, 2);
-                    $stats_html .= "<tr><td><span class='label'>{$nagios_tag_categories[$type]}</span></td> <td> {$number} ({$pct}%) </td></tr>";
-                }
+                $stats_html .= renderStatusProgressBar($status_agg, $status_agg_total);
+                $stats_html .= "<br />";
+                $stats_html .= "<h4>Tag Status Summary</h4><p>Breakdown of the tags applied to the notifications in this search</p>";
+                $stats_html .= renderTagTable($tag_agg, $tag_agg_total, $nagios_alert_tags);
+                $stats_html .= "</table><p>Breakdown of the tags applied (normalised)</p>";
+                $stats_html .= renderTagTable($tag_agg_normalised, $tag_agg_total, $nagios_tag_categories);
                 $stats_html .= "</table><br />";
                 echo $stats_html;
 
