@@ -30,7 +30,7 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 	* The on call report for the previous week is included, along with key stats and elements from report
 	* All weekly updates are displayed in case items need to be discussed
 	* Set up a cron to remind people about the weekly meeting and provide the permalink to the meeting 
-* **Powerful Search**: All data is searchable using a powerful search function
+* **Powerful Search**: All data is searchable using a powerful search function. The default search mode is fuzzy, which will return results from all data stored in Opsweekly. However, you can get more specific: 
 	* Search previous on call alerts for a history of that alert, previous engineer's notes, how the alerts were classified (is this alert constantly "no action taken?") and a time map showing it's frequency over the past year. 
 	* Search Weekly Updates for full context on changes made previously
 	* Search Meeting Notes for agenda items discussed in previous meetings
@@ -49,13 +49,12 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 
 ## Installation/configuration
 1. Download/clone the repo into an appropriate folder either in your
-   webservers directory or symlinked to it. Make sure to point the
-   DocumentRoot to the `htdocs` folder.
+   webservers directory or symlinked to it.
 1. Create a MySQL database for opsweekly, and optionally grant a new user access to it. E.g.:
    * `mysql> create database opsweekly;`
    * `mysql> grant all on opsweekly.* to opsweekly_user@localhost IDENTIFIED BY 'my_password';`
 1. Load the database schema into MySQL, e.g. `mysql -u opsweekly_user opsweekly < opsweekly.sql`
-1. Teach Opsweekly how to authenticate your users
+1. [Teach Opsweekly how to authenticate your users](#authenticating-with-opsweekly).
 1. Move config.php.example to config.php, edit with your favourite editor (more detail below)
 1. Load Opsweekly in your browser
 1. Reward yourself with a refreshing beverage.
@@ -82,20 +81,18 @@ For more information about how to configure the providers or to write your own, 
 
 ## Configuration
 
+The config.php.example contains an example configuration to get you on your way. It's fairly well commented to explain the common options, but we'll go into more depth here: 
+
 ### Authenticating with Opsweekly
 It's very important that Opsweekly knows who everyone who uses Opsweekly is, so the first step of using Opsweekly is to teach it how to understand who people are. 
 
-In `phplib/user_auth.php`, there is the important function, `getUsername`. This function must return the username, for example, "ldenness". 
-You can write whatever PHP you like here; perhaps your SSO passes a HTTP header, or sets a cookie you can read to get the username. 
+In `config.php`, there is the important function, `getUsername`. This function must return the username, for example, "ldenness".
+You can write whatever PHP you like here; perhaps your SSO passes a HTTP header, or sets a cookie you can read to get the username.
 
-The file has an example that will use the username from HTTP Basic Auth that can be configured with Apache. 
+The `config.php.example` has a couple of examples, one that will use the username from HTTP Basic Auth that can be configured with Apache.
 
 
-### config.php
-
-The config.php.example contains an example configuration to get you on your way. It's fairly well commented to explain the common options, but we'll go into more depth here: 
-
-#### Teams configuration
+### Teams configuration
 Opsweekly has the ability to support many different teams using the same codebase, if required. Each team gets it's own "copy" of the UI at a unique URL, and their data is stored in a seperate database. 
 
 Even if you only intend to use one team, the `$teams` array contains most of the important configuration for Opsweekly. 
@@ -119,7 +116,7 @@ Inside this array are many configuration options:
 
 You can have as many teams as you want in the `$teams` array, they just need to have unique FQDNs. 
 
-#### Weekly "hint" provider configuration
+### Weekly "hint" provider configuration
 In this section you define and confgure the available weekly hint providers. These are displayed on the right hand side of the "Add" page so people have some information infront of them about what they did for a prompt to write their updates. 
 
 Of course, you are free to write your own that suits your needs. If you wish to do so, please see the documentation inside of the `providers/weekly` folder. 
@@ -133,7 +130,7 @@ The `$weekly_providers` array handles the definition and configuring of the plug
 
 
 
-#### On call provider configuration
+### On call provider configuration
 In this section you define and configure the available on call notification providers. On call providers are plugins that given a time period and a username (and the configuration we will enter both here and in the team configuration) will fetch all the notifications the person received in that time period, so they can classify the alerts. 
 
 Of course, you are free to write your own that suits your needs. If you wish to do so, please see the documentation inside of the `providers/oncall` folder. 
@@ -145,7 +142,7 @@ The `$oncall_providers` array handles the definition and configuring of the plug
 * `options`: An array of arbritrary key/value pairs that are passed into the provider when it's loaded, used for configuration that is to be shared between all teams. For example, a path to an API, or a username and password to login to an API. 
 
 
-#### Sleep provider configuration
+### Sleep provider configuration
 In this section you can define and configure the sleep providers that users can choose in their "Edit Profile" screen. Sleep providers are plugins that given a unix timestamp, will return data on the sleep state of the user (for example, were they asleep and how deep asleep were they, and did they/how long did it take for them to get back to sleep)
 
 We use this data to generate interesting reports about how on call rotations are affecting engineers sleep patterns, and help the team try and improve this required practice. For example, by listing alerts that most woke engineers, you could make a concious decision to wait to send that alert until morning, if it's not urgent enough. 
@@ -168,7 +165,7 @@ The `$sleep_providers` array handles the definition and configuring of the plugi
 * You are also allowed to pass any other arbritray key/value pairs in. As the entire config array is passed to the plugin, you can retrieve any values that are applicable to Opsweekly as a whole, rather than per user (which are specified above)
 
 
-#### Generic configuration
+### Generic configuration
 There are a few other configuration options, which are documented in the example config file. Some highlights include:
 
 * `$mysql_host`, `$mysql_user`, `$mysql_pass`: Global configuration for your MySQL database. Per team database configuration (e.g. the database name to use) goes inside the team config. 
@@ -229,8 +226,9 @@ e.g., using cron, weekly at 2pm:
 `0 14 * * 3 php /var/www/opsweekly/send_meeting_reminder.php myweekly.yourdomain.com`
 
 
-## Known issues/caveats
+## Known issues/caveats/future goals
 * As the name implies, Opsweekly is rather tied to the concept of a week. In theory the database stores time ranges, but the UI is all based on a week's worth of data
    * At some point I invisage dropping the concept of a fixed time period and instead having "providers" that pull the periods people were on call, prompting them to fill in the data. E.g. Pagerduty: You were on call from X to Y, please categorise your alerts for that period. 
-* The code quality is not that high. I only just started using PHP classes for various bits. Contributions definitely welcome. 
 * Whilst users can fill in their weekly report and on call report as the week continues, two people cannot edit the same on call report otherwise duplicate events may appear in the reports. This is due to the timestamp being part of the unique key for alerts. 
+* Garbage in, garbage out: There is no way to exclude items returned by the on call providers in the reports right now, outside of deleting anything from the database you're not happy with after compiling the on-call report. I want to add a "soft delete" so deliberately allow editing of reports for unforseen reasons (e.g. monitoring system goes wrong and didn't actually send any alerts but they were logged)
+

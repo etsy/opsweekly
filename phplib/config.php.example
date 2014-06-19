@@ -11,6 +11,30 @@ $mysql_pass = "my_password";
 $email_from_domain = "mycompany.com";
 
 /**
+ * Authentication configuration
+ * Nagdash must know who is requesting pages, as every update entry etc is unique
+ * to a single person. 
+ * Therefore, you must define a function somewhere called getUsername()
+ * that will return a plain text username string to Nagdash, e.g. "ldenness" or "bsmith"
+ * 
+ * Below are two examples to get you started. 
+
+function getUsername() {
+    // Make sure this is relevant to your environment.
+    // For example, if you use SSO then maybe you have a HTTP header set, or a cookie.
+    return $_SERVER['HTTP_X_USERNAME'];
+}
+
+function getUsername() {
+    // Use the PHP_AUTH_USER header which contains the username when Basic auth is used.
+    return $_SERVER['PHP_AUTH_USER'];
+}
+
+ **/
+
+
+
+/**
  * Team configuration
  * Arrays of teams, the key being the Virtual Host FQDN, e.g. opsweekly.mycompany.com
  *
@@ -211,3 +235,5 @@ $prod_fqdn = "mycompany.com";
 // Global configuration for irccat, used to send messages to IRC about weekly meetings.
 $irccat_hostname = '';
 $irccat_port = 12345;
+
+

@@ -8,7 +8,6 @@ if (!file_exists('phplib/config.php')) {
 require_once 'config.php';
 require_once 'oncall.php';
 require_once 'irccat.php';
-require_once 'user_auth.php';
 require_once 'pagination.class.php';
 // report.php contains report rendering functions
 include_once("phplib/report.php");
