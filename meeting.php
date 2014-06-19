@@ -20,7 +20,9 @@ $oncall_period = getOnCallWeekRange($time_requested);
 $oncall_start = $oncall_period[0];
 $oncall_end = $oncall_period[1];
 
-$permalink = "http://{$_SERVER['SERVER_NAME']}/meeting.php?week={$start_ts}";
+$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
+                $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$permalink = "{$protocol}{$_SERVER['SERVER_NAME']}/meeting.php?week={$start_ts}";
 
 $page_title = getTeamName() . " Weekly Updates - Meeting View";
 include_once('phplib/header.php');

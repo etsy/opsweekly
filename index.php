@@ -32,7 +32,7 @@ include_once('phplib/nav.php')
         // Welcome splash screen
         if (empty($list_of_users) || !in_array(getUsername(), $list_of_users) ) {
             echo "<div class='hero-unit'><h1>Welcome to $team_name Weekly!</h1>";
-            echo "<p>" . $team_name . " Weekly allows the $team_name team to record and store our weekly updates, as well as categorise and report on ";
+            echo "<p>$team_name Weekly allows the $team_name team to record and store our weekly updates, as well as categorise and report on ";
             echo "our on call experiences. </p><p>On the $team_name team? Get started by adding your first weekly update!</p>";
             echo "<p><a href='/add.php' class='btn btn-success btn-large'><i class='icon-white icon-plus'></i> Add Yours Now</a></p>";
             echo "</div>";
@@ -51,7 +51,7 @@ include_once('phplib/nav.php')
             if($results = getOnCallReportForWeek($oncall_start, $oncall_end)) {
                 echo "<h3>On call report <small> for week " . date("l jS F Y", $oncall_start) . " - " . date("l jS F Y", $oncall_end);
                 echo " compiled by " . guessPersonOnCall($oncall_start, $oncall_end) . "</small></h3>";
-                echo "<h5>" . count($results). " notifications received this week "; 
+                echo "<h5>" . count($results). " notifications received this week ";
     ?>
                 <small><a href="#" onClick="$('#oncall-table').fadeToggle('fast')">hide/show</a></small></h5>
     <?php
@@ -65,7 +65,7 @@ include_once('phplib/nav.php')
 
         // Print the generic weekly updates (if any)
         if(!$updates = getGenericWeeklyReportsForWeek($start_ts, $end_ts)) {
-            echo insertNotify("error", "No Weekly Updates have been entered yet this week"); 
+            echo insertNotify("error", "No Weekly Updates have been entered yet this week");
         } else {
             foreach ($updates as $update) {
                 echo formatWeeklyReportForPrint($update);
