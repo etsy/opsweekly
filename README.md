@@ -1,4 +1,4 @@
-# Opsweekly
+# Opsweekly [![Build Status](https://travis-ci.org/etsy/opsweekly.svg?branch=master)](https://travis-ci.org/etsy/opsweekly)
 
 ## What is Opsweekly?
 
