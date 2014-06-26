@@ -72,7 +72,7 @@ function setDateToLastWeek() {
             }
         ?>
         </small></h2>
-        <form action="add_meeting_notes.php" method="POST" id="weekly-notes">
+        <form action="{$ROOT_URL}/add_meeting_notes.php" method="POST" id="weekly-notes">
         <textarea class="textarea span12" name="weeklynotes" placeholder="Enter Meeting Notes, e.g. Hiring, Launches, Corp IT information" style="height: 200px">
             <?php echo $previous_report  ?>
         </textarea>
@@ -134,7 +134,7 @@ function setDateToLastWeek() {
         <h2>Fin</h2>
         <p>You have reached the end of the meeting report! </p>
         <button class="btn btn-primary" onClick="$('#weekly-notes').submit()">Save Meeting Notes</button>
-        <a class="btn btn-success" href="/index.php"><i class="icon-white icon-home"></i> Home</a>
+        <a class="btn btn-success" href="{$ROOT_URL}/index.php"><i class="icon-white icon-home"></i> Home</a>
         <br />
         <br />
     </div>

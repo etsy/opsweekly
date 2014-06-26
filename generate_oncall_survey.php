@@ -16,7 +16,7 @@ $oncall_end_ts = $oncall_start_end[1];
 ?>
 
 
-<form action="add_oncall_weekly.php" method="POST" class="form-horizontal">
+<form action="{$ROOT_URL}/add_oncall_weekly.php" method="POST" class="form-horizontal">
     <h3>Alerts recieved this week (<?php echo date("l jS F Y", $start_ts) . " - " . date("l jS F Y", $end_ts) ?>)</h3>
     <table class="table table-striped table-bordered table-hover">
     <thead>

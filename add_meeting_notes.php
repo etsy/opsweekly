@@ -15,7 +15,7 @@ if (!connectToDB()) {
     if (!mysql_query($query)) {
         echo "Database update failed, error: " . mysql_error();
     } else {
-        Header('Location: index.php?meeting_done=hellyeah');
+        Header('Location: {$ROOT_URL}/index.php?meeting_done=hellyeah');
     }
 }
 

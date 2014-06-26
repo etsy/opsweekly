@@ -30,7 +30,7 @@ if (isset($_GET['succ'])) {
 <div class="row">
     <div class="span12">
 
-        <form method='POST' action='/save_profile.php'>
+        <form method='POST' action='{$ROOT_URL}/save_profile.php'>
             <fieldset>
             <legend>User details</legend>
             <label>Full Name</label><input type="text" placeholder="Bob Robertson" name="full_name" value="<?= $profile['full_name'] ?>">

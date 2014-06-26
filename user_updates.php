@@ -32,7 +32,7 @@ include_once('phplib/nav.php');
 
     <div class="span3">
     <h4>Choose person</h3>
-    <form id="setperson" action="user_updates.php" method="post">
+    <form id="setperson" action="{$ROOT_URL}/user_updates.php" method="post">
     <select name="username" onchange="this.form.submit()"><option></option>
         <?php 
             $list_of_users = getListOfPeopleWithReports();
