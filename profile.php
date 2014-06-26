@@ -15,7 +15,7 @@ include_once('phplib/nav.php');
 <?php
 
 if (!$profile = checkForUserProfile($my_username)) {
-    echo insertNotify("info", "Welcome to your profile page! Please <a href='/edit_profile.php'>edit your profile</a>");
+    echo insertNotify("info", "Welcome to your profile page! Please <a href='{$ROOT_URL}/edit_profile.php'>edit your profile</a>");
     $profile = null;
 } else {
     $sleeptracking_settings = json_decode($profile['sleeptracking_settings'], 1);
