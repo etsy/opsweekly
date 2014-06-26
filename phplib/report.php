@@ -33,7 +33,7 @@ function renderTagTable($tags, $total, $tag_lookup) {
         $pct = round( ($number / $total) * 100, 2);
         $html_status_summary .= "<tr><td><span class='label'>{$tag_lookup[$type]}</span></td> <td> {$number} ({$pct}%) </td></tr>";
     }
-    return '<table class="table"><?php echo ' . $html_status_summary . '</table>';
+    return '<table class="table">' . $html_status_summary . '</table>';
 }
 
 function renderSleepStatus($sleep_statuses, $status_total, $mtts_total, $rtts_count, $ntts_count) {

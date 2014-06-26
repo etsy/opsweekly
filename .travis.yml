@@ -3,5 +3,7 @@ php:
   - 5.5
   - 5.4
   - hhvm
-install: composer install
+install:
+  - test -f ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && echo "short_open_tag=On" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini || true
+  - composer install
 script: ./vendor/bin/phpunit tests/*
