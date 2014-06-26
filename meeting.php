@@ -118,7 +118,7 @@ function setDateToLastWeek() {
                 $('#oncall-stats').html(data);
             });
         </script>
-        <? } ?>
+        <?php } ?>
 
         <h2>Weekly Updates</h2>
         <?php

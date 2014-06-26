@@ -127,7 +127,7 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
     <div class="span12">
         <h2>Your Summary</h2>
         <p class='lead'>You've submitted <a href="{$ROOT_URL}/user_updates.php"><?= $num_weekly ?> weekly reports</a>
-        <? if ($oncall) { ?>
+        <?php if ($oncall) { ?>
             and <?= $num_oncall ?> on call reports</p>
         <h3>On Call</h3>
         <?php if ($sleep_tracking) { ?>
@@ -145,7 +145,7 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
         <li>Your <strong>Mean Time To Sleep is <?= $mtts ?> minutes</strong> compared to an average from all users of 
             <?= $all_mtts ?> minutes</li>
         </ul>
-        <? } ?>
+        <?php } ?>
         <h4>Notifications</h4>
         <ul class='stats lead'>
         <li>You've had a total of <?= $personal_notifications ?> notifications across <?= $num_oncall ?> weeks, giving an
@@ -196,7 +196,7 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
             <div id="alert_tags_pct_chart"></div>
 
         <br />
-        <? } ?>
+        <?php } ?>
     </div>
 </div>
 <?php include_once('phplib/footer.php'); ?>
