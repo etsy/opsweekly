@@ -1,6 +1,6 @@
 # Contribute
 
-1. For the repo
+1. Fork the repo
 2. Clone your fork
 3. Hack away
 4. If you are adding new functionality, document it in the README
