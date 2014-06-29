@@ -72,7 +72,7 @@ function setDateToLastWeek() {
             }
         ?>
         </small></h2>
-        <form action="{$ROOT_URL}/add_meeting_notes.php" method="POST" id="weekly-notes">
+        <form action="<?= $ROOT_URL; ?>/add_meeting_notes.php" method="POST" id="weekly-notes">
         <textarea class="textarea span12" name="weeklynotes" placeholder="Enter Meeting Notes, e.g. Hiring, Launches, Corp IT information" style="height: 200px">
             <?php echo $previous_report  ?>
         </textarea>

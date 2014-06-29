@@ -126,7 +126,7 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
 <div class="row">
     <div class="span12">
         <h2>Your Summary</h2>
-        <p class='lead'>You've submitted <a href="{$ROOT_URL}/user_updates.php"><?= $num_weekly ?> weekly reports</a>
+        <p class='lead'>You've submitted <a href="<?= $ROOT_URL; ?>/user_updates.php"><?= $num_weekly ?> weekly reports</a>
         <?php if ($oncall) { ?>
             and <?= $num_oncall ?> on call reports</p>
         <h3>On Call</h3>
