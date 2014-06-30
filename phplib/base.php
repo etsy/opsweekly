@@ -38,6 +38,8 @@ if (!$team_data = getTeam($fqdn)) {
     die("I don't know what to do with this FQDN, please add it to config.php");
 }
 
+$ROOT_URL = getTeamUrl();
+
 if (!function_exists('getUsername')) {
     die("You haven't taught opsweekly how to authenticate users! Please check user_auth.php or information in the README");
 }
@@ -219,10 +221,11 @@ function guessPersonOnCall($range_start, $range_end) {
 }
 
 function printHeaderNav() {
-    global $pages, $pages_icon;
+    global $pages, $pages_icon, $ROOT_URL;
 
     foreach ($pages as $url_path => $url_name) {
         $active = ($_SERVER['SCRIPT_NAME'] == $url_path) ? ' class="active"' : "";
+        $url_path = "{$ROOT_URL}{$url_path}";
         echo "<li{$active}><a href='{$url_path}'><i class='{$pages_icon[$url_path]} icon-white'></i> {$url_name}</a></li>";
     }
 }
@@ -419,8 +422,10 @@ function highlightSearchQuery(array $results, $search_q, $search_field) {
 }
 
 function printMoreSearchTypeButton($type, $term) {
+    global $ROOT_URL;
+
     return "<ul class='pager'><li class='next'>
-                <a href='search.php?query=" . urlencode("{$type}: {$term}") . "'>More {$type} results &rarr;</a>
+                <a href='{$ROOT_URL}/search.php?query=" . urlencode("{$type}: {$term}") . "'>More {$type} results &rarr;</a>
               </li></ul>";
 }
 
@@ -507,7 +512,7 @@ function sendMeetingReminder($fqdn) {
     $start_ts = $start_end[0];
     $end_ts = $start_end[1];
 
-    $permalink = "http://{$fqdn}/meeting.php?week={$start_ts}";
+    $permalink = "http://{$fqdn}{$ROOT_URL}/meeting.php?week={$start_ts}";
 
     // If IRC is configured, send an IRC reminder
     if($irc_channel = getTeamConfig('irc_channel')) {
@@ -545,6 +550,16 @@ function formatPagination($current_page, $result_count) {
 function getTeam($fqdn) {
     global $teams;
     return (array_key_exists($fqdn, $teams)) ? $teams[$fqdn] : false;
+}
+
+function getTeamUrl() {
+    // Allow operation on a directory, instead of only on a fqdn
+    $root_url = getTeamConfig('root_url');
+    if ($root_url) {
+        return $root_url;
+    } else {
+        return "/";
+    }
 }
 
 function getTeamName() {

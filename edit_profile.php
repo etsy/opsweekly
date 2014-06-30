@@ -30,7 +30,7 @@ if (isset($_GET['succ'])) {
 <div class="row">
     <div class="span12">
 
-        <form method='POST' action='/save_profile.php'>
+        <form method='POST' action='<?= $ROOT_URL; ?>/save_profile.php'>
             <fieldset>
             <legend>User details</legend>
             <label>Full Name</label><input type="text" placeholder="Bob Robertson" name="full_name" value="<?= $profile['full_name'] ?>">
@@ -57,7 +57,7 @@ if (isset($_GET['succ'])) {
                     $checked = ($profile['sleeptracking_provider'] == $provider_id) ? " checked" : "";
                     echo '<label class="radio">';
                     echo "<input type='radio' name='sleeptracking_provider' id='sleeptracking-{$provider_id}' value='{$provider_id}'{$checked}>";
-                    echo "<img src='{$p_config['logo']}'> <strong>{$p_config['display_name']}</strong> - {$p_config['description']}";
+                    echo "<img src='{$ROOT_URL}{$p_config['logo']}'> <strong>{$p_config['display_name']}</strong> - {$p_config['description']}";
                     echo "</label>";
                     echo "<div class='well hide options_div' id='{$provider_id}-options'>";
                     foreach ($p_config['options'] as $option_id => $o_config) {
