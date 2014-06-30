@@ -37,13 +37,14 @@
  *    - state: The level of the problem. One of: CRITICAL, WARNING, UNKNOWN, DOWN
  */
 function getOnCallNotifications($on_call_name, $provider_global_config, $provider_team_config, $start, $end) {
+    $search_index = $provider_team_config['splunk_index'];
     $search_filter = $provider_team_config['splunk_search'];
 
     // Variable replacement in the search filter, see config.php for the full list.
     $search_filter = str_replace("#logged_in_username#", "$on_call_name", $search_filter);
 
     // Perform a Splunk search to retrieve the Nagios notifications received in the specified timeperiod, with the specifed search filter. 
-    $search = 'index=nagios '. $search_filter .' (state="WARNING" OR state="CRITICAL" OR state="UNKNOWN" OR state="DOWN") | fields *';
+    $search = 'index='. $search_index .' '. $search_filter .' (state="WARNING" OR state="CRITICAL" OR state="UNKNOWN" OR state="DOWN") | fields *';
     $results = doSplunkSearch($search, $start, $end, $provider_global_config);
     if ($results['success'] === false) {
         return 'Failed to retrieve on call data from Splunk, error: ' . $results['error'];

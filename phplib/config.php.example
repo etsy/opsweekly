@@ -54,12 +54,14 @@ function getUsername() {
  **/
 $teams = array(
     "opsweekly.mycompany.com" => array(
+        "root_url" => "/opsweekly",
         "display_name" => "Ops",
         "email_report_to" => "ops@mycompany.com",
         "database" => "opsweekly",
         "oncall" => array(
             "provider" => "splunk",
             "provider_options" => array(
+                "splunk_index" => 'nagios',
                 "splunk_search" => 'contact="#logged_in_username#_pager"',
             ),
             "timezone" => "America/New_York",
