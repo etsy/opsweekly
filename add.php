@@ -50,7 +50,7 @@ include_once('phplib/nav.php')
         </div>
         <div class="notifications" id="notifications"></div>
         <p></p><br />
-        <? }  ?>
+        <?php }  ?>
 
         <h2>Regular update</h2>
         <div class="row">

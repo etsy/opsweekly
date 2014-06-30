@@ -24,7 +24,7 @@ include_once('phplib/nav.php');
 
 <div class="container">
 <h1>On Call Reporting</h1>
-<?
+<?php
 if (getTeamConfig('oncall')) { 
 ?>
 <ul id="myTab" class="nav nav-tabs">
@@ -56,7 +56,7 @@ $('a[data-toggle="tab"]').on('show', function (e) {
 
 })
 </script>
-<? } else {
+<?php } else {
     echo "<p class='lead'>This feature is disabled because you have disabled 'on call' support. Please enable it and try again. </p>";
 }
 ?>

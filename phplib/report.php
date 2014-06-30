@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * This file has all the functions that are used for rendering or calculating
  * items in the reports
