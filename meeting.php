@@ -36,7 +36,7 @@ function setDateToLastWeek() {
 </script>
 
 <div class="container">
-<h1><?=getTeamName()?> Meeting For Week Ending <?php echo date("l jS F Y", $end_ts ) ?></h1>
+<h1><?php echo getTeamName()?> Meeting For Week Ending <?php echo date("l jS F Y", $end_ts ) ?></h1>
 <div class="row">
     <div class="span12">
     <?php 
@@ -52,7 +52,7 @@ function setDateToLastWeek() {
         ?>
         <div class="alert alert-block alert-info">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Welcome to the Weekly <?=getTeamName()?> Meeting</h4>
+            <h4>Welcome to the Weekly <?php echo getTeamName()?> Meeting</h4>
             Below is a compilation of all the things that happened for the selected week. Notes can be written below and they will be saved with that week's data for future reference.  <br />
         </div>
 
@@ -72,7 +72,7 @@ function setDateToLastWeek() {
             }
         ?>
         </small></h2>
-        <form action="<?= $ROOT_URL; ?>/add_meeting_notes.php" method="POST" id="weekly-notes">
+        <form action="<?php echo $ROOT_URL; ?>/add_meeting_notes.php" method="POST" id="weekly-notes">
         <textarea class="textarea span12" name="weeklynotes" placeholder="Enter Meeting Notes, e.g. Hiring, Launches, Corp IT information" style="height: 200px">
             <?php echo $previous_report  ?>
         </textarea>

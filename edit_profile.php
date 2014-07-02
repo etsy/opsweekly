@@ -11,7 +11,7 @@ include_once('phplib/nav.php');
 ?>
 
 <div class="container">
-<h1>Edit profile <small>for user <?=$my_username?></small></h1>
+<h1>Edit profile <small>for user <?php echo $my_username; ?></small></h1>
 
 <?php
 
@@ -30,10 +30,10 @@ if (isset($_GET['succ'])) {
 <div class="row">
     <div class="span12">
 
-        <form method='POST' action='<?= $ROOT_URL; ?>/save_profile.php'>
+        <form method='POST' action='<?php echo $ROOT_URL; ?>/save_profile.php'>
             <fieldset>
             <legend>User details</legend>
-            <label>Full Name</label><input type="text" placeholder="Bob Robertson" name="full_name" value="<?= $profile['full_name'] ?>">
+            <label>Full Name</label><input type="text" placeholder="Bob Robertson" name="full_name" value="<?php echo $profile['full_name']; ?>">
             <label>Time Zone</label>
             <select name="timezone">
                 <option></option>

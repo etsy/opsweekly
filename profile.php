@@ -126,34 +126,35 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
 <div class="row">
     <div class="span12">
         <h2>Your Summary</h2>
-        <p class='lead'>You've submitted <a href="<?= $ROOT_URL; ?>/user_updates.php"><?= $num_weekly ?> weekly reports</a>
+        <p class='lead'>You've submitted <a href="<?php echo $ROOT_URL; ?>/user_updates.php"><?php echo $num_weekly; ?> weekly reports</a>
         <?php if ($oncall) { ?>
-            and <?= $num_oncall ?> on call reports</p>
+            and <?php echo $num_oncall; ?> on call reports</p>
         <h3>On Call</h3>
         <?php if ($sleep_tracking) { ?>
         <h4>Sleep</h4>
         <ul class='stats lead'>
-        <li>You're using sleep tracking from  <img src="<?= $sleep_logo ?>"> <strong><?= $sleep_name ?></strong></li>
-        <li>You've been woken up an average of <strong><?= round($sleep_status_agg[1] / $num_oncall, 1) ?> times per week</strong>
-            and have lost a total of <strong><?= round( $mtts_total / 60 / 60, 1) ?> hours of sleep</strong> to notifications</li>
-        <li>That's an average of <strong><?= round ( ($mtts_total / $num_oncall) / 60 / 60, 1) ?> hours sleep lost per week</strong> 
-            due to notifications (<?= round ( ($all_mtts_total / $total_weeks) / 60 / 60, 1)  ?> hours globally)</li>
-        <li><strong><?= round($my_wake_ups_pct, 1) ?>%</strong> of notifications have woken you up, 
-            compared to the average of <?= round($all_wake_ups_pct, 1) ?>%</li>
-        <li>The service that woke you up the most was <strong>'<?= array_search(max($top_wakeup_cause), $top_wakeup_cause)  ?>'
-            </strong> which it did <?= max($top_wakeup_cause); ?> times</li>
-        <li>Your <strong>Mean Time To Sleep is <?= $mtts ?> minutes</strong> compared to an average from all users of 
-            <?= $all_mtts ?> minutes</li>
+        <li>You're using sleep tracking from  <img src="<?php echo $sleep_logo; ?>"> <strong><?php echo $sleep_name; ?></strong></li>
+        <li>You've been woken up an average of <strong><?php echo round($sleep_status_agg[1] / $num_oncall, 1); ?> times per week</strong>
+            and have lost a total of <strong><?php echo round( $mtts_total / 60 / 60, 1); ?> hours of sleep</strong> to notifications</li>
+        <li>That's an average of <strong><?php echo round ( ($mtts_total / $num_oncall) / 60 / 60, 1); ?> hours sleep lost per week</strong> 
+            due to notifications (<?php echo round ( ($all_mtts_total / $total_weeks) / 60 / 60, 1);  ?> hours globally)</li>
+        <li><strong><?php echo round($my_wake_ups_pct, 1); ?>%</strong> of notifications have woken you up, 
+            compared to the average of <?php echo round($all_wake_ups_pct, 1); ?>%</li>
+        <li>The service that woke you up the most was <strong>'<?php echo array_search(max($top_wakeup_cause), $top_wakeup_cause); ?>'
+            </strong> which it did <?php echo max($top_wakeup_cause); ?> times</li>
+        <li>Your <strong>Mean Time To Sleep is <?php echo $mtts; ?> minutes</strong> compared to an average from all users of 
+            <?php echo $all_mtts; ?> minutes</li>
         </ul>
         <?php } ?>
+        
         <h4>Notifications</h4>
         <ul class='stats lead'>
-        <li>You've had a total of <?= $personal_notifications ?> notifications across <?= $num_oncall ?> weeks, giving an
-            average of <strong><?= $personal_per_week ?> alerts per week</strong>. </li>
-        <li>This compares to an average of <?= $total_per_week ?> per week in total in the last year, 
-            leaving you <strong><?= $per_week_diff ?></strong></li>
-        <li>You tagged <strong><?= round($my_noaction_pct, 2) ?>% of alerts 'no action taken'</strong> compared to 
-            <?= round($all_noaction_pct, 2) ?>% globally. </li>
+        <li>You've had a total of <?php $personal_notifications; ?> notifications across <?php echo $num_oncall; ?> weeks, giving an
+            average of <strong><?php echo $personal_per_week; ?> alerts per week</strong>. </li>
+        <li>This compares to an average of <?php echo $total_per_week; ?> per week in total in the last year, 
+            leaving you <strong><?php echo $per_week_diff; ?></strong></li>
+        <li>You tagged <strong><?php echo round($my_noaction_pct, 2); ?>% of alerts 'no action taken'</strong> compared to 
+            <?php echo round($all_noaction_pct, 2); ?>% globally. </li>
         </ul>
         <br />
         <h4>Personal Notification Time Map</h4>
