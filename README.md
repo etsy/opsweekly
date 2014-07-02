@@ -49,7 +49,9 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 
 ## Installation/configuration
 1. Download/clone the repo into an appropriate folder either in your
-   webservers directory or symlinked to it.
+   webservers directory or symlinked to it. or:
+1. Create a configuration in your webserver for Opsweekly, if using it as a seperate domain (e.g. VirtualHost)
+1. You *must* increase the PHP variable `max_input_vars` for submitting on-call reports. See [Increasing max input vars](#increasing-max-input-vars)
 1. Create a MySQL database for opsweekly, and optionally grant a new user access to it. E.g.:
    * `mysql> create database opsweekly;`
    * `mysql> grant all on opsweekly.* to opsweekly_user@localhost IDENTIFIED BY 'my_password';`
@@ -91,6 +93,12 @@ You can write whatever PHP you like here; perhaps your SSO passes a HTTP header,
 
 The `config.php.example` has a couple of examples, one that will use the username from HTTP Basic Auth that can be configured with Apache.
 
+### Increasing max input vars
+PHP has a default limit of the number of variables that can be input via form submission. Because compiling and submitting the on-call report is essentially just submitting a giant form, you must increase this value or your reports will be truncated! 
+
+Look for the configuration option `max_input_vars` in your PHP configuration (e.g. php.ini) or if you have your own Virtualhost (e.g. in Apache) you can do something like: `php_value max_input_vars 10000` to increase the limit. 
+
+We highly suggest increasing to 10000 for future proofing your on-call reports. There's no real downside to this if you're limiting it to Opsweekly. The limit is to try and protect against exploits by hash collisions (basically, someone DoS-ing forms on your site). But you should not run Opsweekly exposed on the internet anyway. 
 
 ### Teams configuration
 Opsweekly has the ability to support many different teams using the same codebase, if required. Each team gets it's own "copy" of the UI at a unique URL, and their data is stored in a seperate database. 

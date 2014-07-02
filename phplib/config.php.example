@@ -93,6 +93,23 @@ $teams = array(
             "end" => "monday 12:00",
         ),
     ),
+    "forthweekly.mycompany.com" => array(
+        "display_name" => "Forth",
+        "email_report_to" => "forth@mycompany.com",
+        "database" => "forthweekly",
+        "weekly_hints" => array("jira", "github"),
+        "oncall" => array(
+            "provider" => "logstash",
+            "provider_options" => array(
+                "notification-user-map" => array(
+                    "username" => "nagioscontact",
+                ),
+            ),
+            "timezone" => "America/New_York",
+            "start" => "monday 12:00",
+            "end" => "monday 12:00",
+        ),
+    ),
 );
 
 /**
@@ -157,6 +174,10 @@ $oncall_providers = array(
     ),
     "logstash" => array(
         "display_name" => "Logstash",
+        "lib" => "providers/oncall/logstash.php",
+        "options" => array(
+            "base_url" => "http://localhost:9200",
+        ),
     ),
     "pagerduty" => array(
         "display_name" => "Pagerduty",
