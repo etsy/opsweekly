@@ -1,9 +1,12 @@
-Using logstash for oncall reporting.
+# Using logstash for oncall reporting.
 ------------------------------------
+
+## Setting up Logstash
 
 - Ship your nagios logs into logstash, either via syslog or logstash forwarder
 - Apply the 'nagios filters'
 
+```
     filter {
       if [file] =~ /\/var\/log\/nagios\/nagios.log$/ {
         grok {
@@ -12,12 +15,14 @@ Using logstash for oncall reporting.
           match => { "message" => "%{NAGIOSLOGLINE}" }
           remove_field => [ "message" ]
         }
+```
 
-Nagios log entries should get the nagios_* tags applied in logstash.
+- Nagios log entries should get the nagios_* tags applied in logstash.
 
-Enable th elogstash provider, and add the required config.  
+## Opsweekly configuration
 
-Setup a notification-user-map if you use different contactnames in nagios than in opsweekly.
+- Enable the logstash provider, and add the required config.
 
-Goto add, click 'Im was on call'
+- Setup a notification-user-map if you use different contactnames in nagios than in opsweekly.
 
+- Profit
