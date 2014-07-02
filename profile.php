@@ -22,7 +22,12 @@ if (!$profile = checkForUserProfile($my_username)) {
 }
 
 // Welcome the user either with their full name, or their username.
-$name = ($profile['full_name'] != "") ? explode(" ", $profile['full_name'])[0] : $my_username;
+if ($profile['full_name'] != "") {
+    list($name, $rest) = explode(" ", $profile['full_name'], 2);
+} else {
+    $name = $my_username;
+}
+
 echo "<h1>Hello {$name} <small>viewing your profile</small></h1>";
 
 // Count the number of weekly updates for the summary
