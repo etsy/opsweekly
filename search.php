@@ -1,6 +1,7 @@
 <?php
 
 include_once("phplib/base.php");
+connectToDB();
 
 $query = ((isset($_GET['query'])) && ($_GET['query'] != "")) ? mysql_real_escape_string($_GET['query']) : null;
 

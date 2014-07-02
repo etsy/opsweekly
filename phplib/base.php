@@ -152,8 +152,8 @@ function generateMeetingNotesID($range_start, $range_end) {
 }
 
 function checkForPreviousWeeklyUpdate($report_id) {
-    $report_id = mysql_real_escape_string($report_id);
     if (connectToDB()) {
+        $report_id = mysql_real_escape_string($report_id);
         $results = mysql_query("SELECT * FROM generic_weekly where report_id='{$report_id}' order by id DESC LIMIT 1");
         if (mysql_num_rows($results) == 1) {
             return mysql_fetch_assoc($results);
@@ -166,8 +166,8 @@ function checkForPreviousWeeklyUpdate($report_id) {
 }
 
 function checkForPreviousMeetingNotes($report_id) {
-    $report_id = mysql_real_escape_string($report_id);
     if (connectToDB()) {
+        $report_id = mysql_real_escape_string($report_id);
         $results = mysql_query("SELECT * FROM meeting_notes where report_id='{$report_id}' order by id DESC LIMIT 1");
         if (mysql_num_rows($results) == 1) {
             return mysql_fetch_assoc($results);
@@ -180,8 +180,8 @@ function checkForPreviousMeetingNotes($report_id) {
 }
 
 function checkForPreviousOnCallItem($alert_id) {
-    $alert_id = mysql_real_escape_string($alert_id);
     connectToDB();
+    $alert_id = mysql_real_escape_string($alert_id);
     $results = mysql_query("SELECT * FROM oncall_weekly where alert_id='{$alert_id}' order by id DESC LIMIT 1");
     if (mysql_num_rows($results) == 1) {
         return mysql_fetch_assoc($results);
