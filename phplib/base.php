@@ -558,7 +558,7 @@ function getTeamUrl() {
     if ($root_url) {
         return $root_url;
     } else {
-        return "/";
+        return "";
     }
 }
 
