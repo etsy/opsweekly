@@ -141,7 +141,7 @@ include_once('phplib/nav.php');
                 </script>
                 <br />
 
-                <?
+                <?php
             }
 
         } else {

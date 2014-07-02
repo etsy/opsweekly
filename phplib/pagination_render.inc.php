@@ -12,7 +12,7 @@
     // if there are pages to be shown
     if ($pages > 1) {
 ?>
-<div class="<?= implode(' ', $classes) ?>">
+<div class="<?php echo implode(' ', $classes); ?>">
     <ul class="clear">
 <?php
         /**
@@ -34,7 +34,7 @@
             array_push($classes, 'disabled');
         }
 ?>
-        <li class="<?= implode(' ', $classes) ?>"><a href="<?= ($href) ?>"><?= ($previous) ?></a></li>
+        <li class="<?php echo implode(' ', $classes); ?>"><a href="<?php echo $href; ?>"><?php echo $previous; ?></a></li>
 <?php
         /**
          * if this isn't a clean output for pagination (eg. show numerical
@@ -78,13 +78,13 @@
                     $href
                 );
 ?>
-        <li class="number"><a href="<?= ($href) ?>"><?= ($current + $x - $leading) ?></a></li>
+        <li class="number"><a href="<?php echo ($href); ?>"><?php echo ($current + $x - $leading); ?></a></li>
 <?php
             }
 
             // print current page
 ?>
-        <li class="number active"><a href="#"><?= ($current) ?></a></li>
+        <li class="number active"><a href="#"><?php echo ($current); ?></a></li>
 <?php
             // generate/render trailing crumbs
             for ($x = 0; $x < $trailing; ++$x) {
@@ -99,7 +99,7 @@
                     $href
                 );
 ?>
-        <li class="number"><a href="<?= ($href) ?>"><?= ($current + $x + 1) ?></a></li>
+        <li class="number"><a href="<?php echo ($href); ?>"><?php echo ($current + $x + 1); ?></a></li>
 <?php
             }
         }
@@ -123,7 +123,7 @@
             array_push($classes, 'disabled');
         }
 ?>
-        <li class="<?= implode(' ', $classes) ?>"><a href="<?= ($href) ?>"><?= ($next) ?></a></li>
+        <li class="<?php echo implode(' ', $classes); ?>"><a href="<?php echo ($href); ?>"><?php echo ($next); ?></a></li>
     </ul>
 </div>
 <?php
