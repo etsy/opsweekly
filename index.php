@@ -34,7 +34,7 @@ include_once('phplib/nav.php')
             echo "<div class='hero-unit'><h1>Welcome to $team_name Weekly!</h1>";
             echo "<p>$team_name Weekly allows the $team_name team to record and store our weekly updates, as well as categorise and report on ";
             echo "our on call experiences. </p><p>On the $team_name team? Get started by adding your first weekly update!</p>";
-            echo "<p><a href='/add.php' class='btn btn-success btn-large'><i class='icon-white icon-plus'></i> Add Yours Now</a></p>";
+            echo "<p><a href='${ROOT_URL}/add.php' class='btn btn-success btn-large'><i class='icon-white icon-plus'></i> Add Yours Now</a></p>";
             echo "</div>";
         }
 
@@ -76,10 +76,10 @@ include_once('phplib/nav.php')
     </div>
 
     <div class="span3">
-    <div><a href="/add.php" class="btn btn-success btn-block"><i class="icon-white icon-plus"></i> Add Yours</a></div>
+    <div><a href="<?php echo $ROOT_URL; ?>/add.php" class="btn btn-success btn-block"><i class="icon-white icon-plus"></i> Add Yours</a></div>
     <br />
     <h4>Choose week</h4>
-    <form id="setdate" action="index.php" method="post">
+    <form id="setdate" action="<?php echo $ROOT_URL; ?>/index.php" method="post">
     <div id="datepicker" data-date="<?php echo date('m/d/y', $end_ts) ?>"><input id="picked-date" type="hidden" name="date" value=""></div>
     <script>
         $('#datepicker').datepicker({ format: "mm/dd/yy", todayHighlight: true, weekStart: 1 })
@@ -90,7 +90,7 @@ include_once('phplib/nav.php')
     </script>
     </form>
     <h4>Choose person</h3>
-    <form id="setperson" action="user_updates.php" method="post">
+    <form id="setperson" action="<?php echo $ROOT_URL; ?>/user_updates.php" method="post">
     <select name="username" onchange="this.form.submit()"><option></option>
         <?php 
             foreach($list_of_users as $user) {

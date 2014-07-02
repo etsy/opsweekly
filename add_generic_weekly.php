@@ -19,10 +19,10 @@ if (!connectToDB()) {
         if (isset($_POST['do_email'])) {
             # The user clicked the email button so also email a copy of the report
             if (sendEmailReport($username, $report, $range_start, $range_end)) {
-                Header('Location: add.php?weekly_succ_email=hellyeah');
+                Header("Location: {$ROOT_URL}/add.php?weekly_succ_email=hellyeah");
             }
         } else {
-            Header('Location: add.php?weekly_succ=hellyeah');
+            Header("Location: {$ROOT_URL}/add.php?weekly_succ=hellyeah");
         }
     }
 }

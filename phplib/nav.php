@@ -1,13 +1,13 @@
 <div class="navbar navbar-inverse navbar-static-top">
  <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="/"><?=getTeamName()?>weekly</a>
+      <a class="brand" href="<?php echo $ROOT_URL;?>/"><?php echo getTeamName(); ?>weekly</a>
       <ul class="nav">
         <?php
             printHeaderNav();
         ?>
       </ul>
-      <form class="navbar-search pull-left" action="/search.php" method="get">
+      <form class="navbar-search pull-left" action="<?php echo $ROOT_URL; ?>/search.php" method="get">
         <input id="nav-search" type="text" name="query" class="search-query" placeholder="Search Reports and Notifications" value="<?php echo $query ?>">
         <script>
             $("#nav-search").on("click").popover({
@@ -59,8 +59,8 @@
                 <i class="icon-user icon-white"></i> <?php echo getUsername() ?><b class="caret"></b>
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dProfile">
-                <li><a tabindex="-1" href="/profile.php">View Profile</a></li>
-                <li><a tabindex="-1" href="/edit_profile.php">Edit Profile</a></li>
+                <li><a tabindex="-1" href="<?php echo $ROOT_URL; ?>/profile.php">View Profile</a></li>
+                <li><a tabindex="-1" href="<?php echo $ROOT_URL; ?>/edit_profile.php">Edit Profile</a></li>
             </ul>
         </li>
 

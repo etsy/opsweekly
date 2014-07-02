@@ -1,8 +1,8 @@
 <div class="row">
     <div class="span12">
         <h2>Overall stats <small> for last year </small></h2>
-        <p class='lead'><?= $year_total_notifications ?> notifications received this year 
-            over <?= $num_weeks ?> weeks of data (average of <?= $week_avg ?> per week)</p>
+        <p class='lead'><?php echo $year_total_notifications; ?> notifications received this year 
+            over <?php echo $num_weeks; ?> weeks of data (average of <?php echo $week_avg; ?> per week)</p>
         <h3>Alert Status Distribution</h3>
         <p>Breakdown of the type of notifications recieved during the last year</p>
         <?php echo renderStatusProgressBar($year_status_agg, $year_status_agg_total); ?>

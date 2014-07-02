@@ -110,6 +110,7 @@ The key of the array(s) in the `$teams` array is the FQDN that you will access O
 Inside this array are many configuration options:
 
 * `display_name`: The "friendly" or display name for your team is used throughout the UI to describe your team. For example, "Ops"
+* `root_url`: If your installation is on a path other than "/", enter the path here. For example, if your desired URL is "http://intranet.mycompany.com/opsweekly" would enter "/opsweekly".
 * `email_report_to`: The email address of the mailing list your team uses to communicate, used for sending weekly reports (if the person requests it) or any other email communication. 
 * `database`: The name of the MySQL database Opsweekly will try and use for this team
 * `oncall`: Either `false` or another array containing configuration regarding your on call rotations. 

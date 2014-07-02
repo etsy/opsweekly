@@ -1,7 +1,7 @@
 <div class="row">
     <div class="span12">
-        <h2>Week Stats <small> for week <?= $pretty_start ?> - <?= $pretty_end ?></small></h2>
-        <p class='lead'><?= $total_notifications ?> notifications received this week </p>
+        <h2>Week Stats <small> for week <?php echo $pretty_start; ?> - <?php echo $pretty_end; ?></small></h2>
+        <p class='lead'><?php echo $total_notifications; ?> notifications received this week </p>
         <h3>Alert Status Distribution</h3>
         <p>Breakdown of the type of notifications recieved during the week</p>
         <?php echo renderStatusProgressBar($week_status_agg, $week_status_agg_total); ?>

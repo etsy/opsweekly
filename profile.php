@@ -15,14 +15,19 @@ include_once('phplib/nav.php');
 <?php
 
 if (!$profile = checkForUserProfile($my_username)) {
-    echo insertNotify("info", "Welcome to your profile page! Please <a href='/edit_profile.php'>edit your profile</a>");
+    echo insertNotify("info", "Welcome to your profile page! Please <a href='{$ROOT_URL}/edit_profile.php'>edit your profile</a>");
     $profile = null;
 } else {
     $sleeptracking_settings = json_decode($profile['sleeptracking_settings'], 1);
 }
 
 // Welcome the user either with their full name, or their username.
-$name = ($profile['full_name'] != "") ? explode(" ", $profile['full_name'])[0] : $my_username;
+if ($profile['full_name'] != "") {
+    list($name, $rest) = explode(" ", $profile['full_name'], 2);
+} else {
+    $name = $my_username;
+}
+
 echo "<h1>Hello {$name} <small>viewing your profile</small></h1>";
 
 // Count the number of weekly updates for the summary
@@ -126,34 +131,35 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
 <div class="row">
     <div class="span12">
         <h2>Your Summary</h2>
-        <p class='lead'>You've submitted <a href="/user_updates.php"><?= $num_weekly ?> weekly reports</a>
-        <? if ($oncall) { ?>
-            and <?= $num_oncall ?> on call reports</p>
+        <p class='lead'>You've submitted <a href="<?php echo $ROOT_URL; ?>/user_updates.php"><?php echo $num_weekly; ?> weekly reports</a>
+        <?php if ($oncall) { ?>
+            and <?php echo $num_oncall; ?> on call reports</p>
         <h3>On Call</h3>
         <?php if ($sleep_tracking) { ?>
         <h4>Sleep</h4>
         <ul class='stats lead'>
-        <li>You're using sleep tracking from  <img src="<?= $sleep_logo ?>"> <strong><?= $sleep_name ?></strong></li>
-        <li>You've been woken up an average of <strong><?= round($sleep_status_agg[1] / $num_oncall, 1) ?> times per week</strong>
-            and have lost a total of <strong><?= round( $mtts_total / 60 / 60, 1) ?> hours of sleep</strong> to notifications</li>
-        <li>That's an average of <strong><?= round ( ($mtts_total / $num_oncall) / 60 / 60, 1) ?> hours sleep lost per week</strong> 
-            due to notifications (<?= round ( ($all_mtts_total / $total_weeks) / 60 / 60, 1)  ?> hours globally)</li>
-        <li><strong><?= round($my_wake_ups_pct, 1) ?>%</strong> of notifications have woken you up, 
-            compared to the average of <?= round($all_wake_ups_pct, 1) ?>%</li>
-        <li>The service that woke you up the most was <strong>'<?= array_search(max($top_wakeup_cause), $top_wakeup_cause)  ?>'
-            </strong> which it did <?= max($top_wakeup_cause); ?> times</li>
-        <li>Your <strong>Mean Time To Sleep is <?= $mtts ?> minutes</strong> compared to an average from all users of 
-            <?= $all_mtts ?> minutes</li>
+        <li>You're using sleep tracking from  <img src="<?php echo $sleep_logo; ?>"> <strong><?php echo $sleep_name; ?></strong></li>
+        <li>You've been woken up an average of <strong><?php echo round($sleep_status_agg[1] / $num_oncall, 1); ?> times per week</strong>
+            and have lost a total of <strong><?php echo round( $mtts_total / 60 / 60, 1); ?> hours of sleep</strong> to notifications</li>
+        <li>That's an average of <strong><?php echo round ( ($mtts_total / $num_oncall) / 60 / 60, 1); ?> hours sleep lost per week</strong> 
+            due to notifications (<?php echo round ( ($all_mtts_total / $total_weeks) / 60 / 60, 1);  ?> hours globally)</li>
+        <li><strong><?php echo round($my_wake_ups_pct, 1); ?>%</strong> of notifications have woken you up, 
+            compared to the average of <?php echo round($all_wake_ups_pct, 1); ?>%</li>
+        <li>The service that woke you up the most was <strong>'<?php echo array_search(max($top_wakeup_cause), $top_wakeup_cause); ?>'
+            </strong> which it did <?php echo max($top_wakeup_cause); ?> times</li>
+        <li>Your <strong>Mean Time To Sleep is <?php echo $mtts; ?> minutes</strong> compared to an average from all users of 
+            <?php echo $all_mtts; ?> minutes</li>
         </ul>
-        <? } ?>
+        <?php } ?>
+        
         <h4>Notifications</h4>
         <ul class='stats lead'>
-        <li>You've had a total of <?= $personal_notifications ?> notifications across <?= $num_oncall ?> weeks, giving an
-            average of <strong><?= $personal_per_week ?> alerts per week</strong>. </li>
-        <li>This compares to an average of <?= $total_per_week ?> per week in total in the last year, 
-            leaving you <strong><?= $per_week_diff ?></strong></li>
-        <li>You tagged <strong><?= round($my_noaction_pct, 2) ?>% of alerts 'no action taken'</strong> compared to 
-            <?= round($all_noaction_pct, 2) ?>% globally. </li>
+        <li>You've had a total of <?php $personal_notifications; ?> notifications across <?php echo $num_oncall; ?> weeks, giving an
+            average of <strong><?php echo $personal_per_week; ?> alerts per week</strong>. </li>
+        <li>This compares to an average of <?php echo $total_per_week; ?> per week in total in the last year, 
+            leaving you <strong><?php echo $per_week_diff; ?></strong></li>
+        <li>You tagged <strong><?php echo round($my_noaction_pct, 2); ?>% of alerts 'no action taken'</strong> compared to 
+            <?php echo round($all_noaction_pct, 2); ?>% globally. </li>
         </ul>
         <br />
         <h4>Personal Notification Time Map</h4>
@@ -196,7 +202,7 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
             <div id="alert_tags_pct_chart"></div>
 
         <br />
-        <? } ?>
+        <?php } ?>
     </div>
 </div>
 <?php include_once('phplib/footer.php'); ?>
