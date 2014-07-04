@@ -37,7 +37,7 @@
  *    - state: The level of the problem. One of: CRITICAL, WARNING, UNKNOWN, DOWN
  */
 function getOnCallNotifications($on_call_name, $provider_global_config, $provider_team_config, $start, $end) {
-    $search_index = $provider_team_config['splunk_index'];
+    $search_index = (isset($provider_team_config['splunk_index'])) ? $provider_team_config['splunk_index'] : 'nagios';
     $search_filter = $provider_team_config['splunk_search'];
 
     // Variable replacement in the search filter, see config.php for the full list.
