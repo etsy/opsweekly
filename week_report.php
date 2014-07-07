@@ -35,7 +35,7 @@
         </thead>
         <tbody> 
         <?php
-            echo renderTopNTableBody($week_top_host_agg);
+            echo renderTopNTableBody($week_top_host_agg, 10, 'host');
         ?>
         </tbody>
         </table>
@@ -50,7 +50,7 @@
         </thead>
         <tbody> 
         <?php
-            echo renderTopNTableBody($week_top_service_agg);
+            echo renderTopNTableBody($week_top_service_agg, 10, 'service');
         ?>
         </tbody>
         </table>
