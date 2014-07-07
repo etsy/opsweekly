@@ -134,7 +134,7 @@ function setDateToLastWeek() {
         <h2>Fin</h2>
         <p>You have reached the end of the meeting report! </p>
         <button class="btn btn-primary" onClick="$('#weekly-notes').submit()">Save Meeting Notes</button>
-        <a class="btn btn-success" href="{$ROOT_URL}/index.php"><i class="icon-white icon-home"></i> Home</a>
+        <a class="btn btn-success" href="<?php echo $ROOT_URL; ?>/index.php"><i class="icon-white icon-home"></i> Home</a>
         <br />
         <br />
     </div>
