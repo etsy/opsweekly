@@ -69,7 +69,7 @@ function doLogstashSearch($pagername, $start, $end, $config, $max_results = 1000
                 "filtered": {
                     "query": {
                         "query_string": {
-                            "query": "nagios_notifyname:\"'.$pagername.'\" AND NOT (nagios_state:\"ACKNOWLEDGEMENT*\" or nagios_state:\"UP\" OR nagios_state:\"OK\") AND NOT nagios_service:\"SMS Check\""
+                            "query": "nagios_notifyname:\"'.$pagername.'\" AND NOT (nagios_state:\"ACKNOWLEDGEMENT*\" OR nagios_state:\"UP\" OR nagios_state:\"OK\") AND NOT nagios_service:\"SMS Check\""
                         }
                     },
                     "filter": {
