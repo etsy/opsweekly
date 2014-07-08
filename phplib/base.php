@@ -491,18 +491,19 @@ function formatMeetingNotesForPrint(array $data, $small_header = false) {
 function printWeeklyHints($username, $from, $to) {
     $wanted_hints = getTeamConfig('weekly_hints');
 
-    foreach ($wanted_hints as $provider) {
-        // Load each requested provider and run the printHints() to print the hints
-        $provider_info = getWeeklyHintProvider($provider);
-        if ($provider_info && require_once($provider_info['lib'])) {
-            $provider_class = new $provider_info['class']($username, $provider_info['options'], $from, $to);
-            echo "<h4>{$provider_info['display_name']}</h4>";
-            echo $provider_class->printHints();
-        } else {
-            echo insertNotify("info", "Couldn't load weekly hint provider '{$provider}'! Please check your config.");
+    if (is_array($wanted_hints)) {
+        foreach ($wanted_hints as $provider) {
+            // Load each requested provider and run the printHints() to print the hints
+            $provider_info = getWeeklyHintProvider($provider);
+            if ($provider_info && require_once($provider_info['lib'])) {
+                $provider_class = new $provider_info['class']($username, $provider_info['options'], $from, $to);
+                echo "<h4>{$provider_info['display_name']}</h4>";
+                echo $provider_class->printHints();
+            } else {
+                echo insertNotify("info", "Couldn't load weekly hint provider '{$provider}'! Please check your config.");
+            }
         }
     }
-
 }
 
 function sendMeetingReminder($fqdn) {
