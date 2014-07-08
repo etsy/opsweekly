@@ -462,11 +462,14 @@ function formatOnCallRowForPrint(array $n) {
     $html = "<tr>";
     $html .= "<td>{$pretty_date} {$sleep_html}</td><td>{$n['hostname']}</td><td>{$n['service']}</td><td><pre><small>{$n['output']}</small></pre></td>";
     $html .= "<td><span class='label label-{$nagios_state_to_badge[$n['state']]}'>{$n['state']}</span></td></tr>";
-    $shorttag = array_shift(explode(':', $nagios_alert_tags[$n['tag']]));
+    $tag_bits = explode(':', $nagios_alert_tags[$n['tag']]);
+    $shorttag = array_shift($tag_bits);
     $tag = ($n['tag'] != "") ? "<span class='label label-{$tag_to_badge[$shorttag]}'><i class='icon-tag'></i><b>{$nagios_alert_tags[$n['tag']]}</b></span>" : "";
     $notes = ($n['notes'] != "") ? "<i class='icon-info-sign'></i> {$n['notes']}" : "";
     if ( ($n['tag'] != "") || ($n['notes'] != "") ) {
         $html .= "<tr><td colspan='5'>{$tag}<br>{$notes}</td></tr>";
+    } else {
+        $html .= "<tr><td colspan='5'></td></tr>";
     }
     date_default_timezone_set("UTC");
 
