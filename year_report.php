@@ -56,7 +56,7 @@
         </thead>
         <tbody> 
         <?php
-            echo renderTopNTableBody($year_top_service_agg, 10 'service');
+            echo renderTopNTableBody($year_top_service_agg, 10, 'service');
         ?>
         </tbody>
         </table>
