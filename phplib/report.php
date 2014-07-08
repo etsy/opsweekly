@@ -58,7 +58,7 @@ function renderSleepStatus($sleep_statuses, $status_total, $mtts_total, $rtts_co
 
 }
 
-function renderTopNTableBody($input_array, $limit = 10) {
+function renderTopNTableBody($input_array, $limit = 10, $type = 'host') {
     if(!is_array($input_array)) {
         return false;
     }
@@ -71,7 +71,12 @@ function renderTopNTableBody($input_array, $limit = 10) {
 
     $html = '';
     foreach($a as $k => $v) {
-        $html .= "<tr><td>{$k}</td><td>{$v}</td></tr>";
+        if ($type == 'host') {
+            $link="<a href=\"{$ROOT_URL}/search.php?query=host: {$k}\">{$k}</a>";
+        } else {
+            $link="<a href=\"{$ROOT_URL}/search.php?query=service: {$k}\">{$k}</a>";
+        }
+        $html .= "<tr><td>{$link}</td><td>{$v}</td></tr>";
     }
 
     return $html;
