@@ -67,7 +67,8 @@ function getTimezoneSetting() {
 }
 
 function getWeekRange($date) {
-    $date = array_shift(explode('(', $date));
+    $date_bits = explode('(', $date);
+    $date = array_shift($date_bits);
     $ts = strtotime($date);
     $target_start = (date('l', $ts) == "Monday") ? "monday" : "last monday";
     $target_end = (date('l', $ts) == "Sunday") ? "sunday" : "next sunday";
@@ -85,7 +86,8 @@ function getOnCallWeekRange($date) {
     $oncall_start_time = getTeamOncallConfig('start');
     $oncall_end_time = getTeamOncallConfig('end');
 
-    $date = array_shift(explode('(', $date));
+    $date_bits = explode('(', $date);
+    $date = array_shift($date_bits);
     $ts = strtotime($date);
     // If we're still in the report week, we need to make sure we don't skip forward to the next oncall
     // week otherwise the two become mismatched. 
@@ -104,7 +106,8 @@ function getOnCallWeekRangeWithTZ($date) {
     $oncall_start_time = getTeamOncallConfig('start');
     $oncall_end_time = getTeamOncallConfig('end');
 
-    $date = array_shift(explode('(', $date));
+    $date_bits = explode('(', $date);
+    $date = array_shift($date_bits);
     $ts = strtotime($date);
     $ts = ( date('l', $ts) == "Saturday" || date('l', $ts) == "Sunday" ) ? $ts = $ts - 172800: $ts;
     date_default_timezone_set($oncall_timezone);
