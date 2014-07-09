@@ -16,7 +16,7 @@ $pages = array("/index.php" => "Overview", "/add.php" => "Add", "/report.php" =>
 $pages_icon = array("/index.php" => "icon-home", "/add.php" => "icon-plus-sign", "/report.php" => "icon-list-alt", "/meeting.php" => "icon-bullhorn");
 $nagios_state_to_badge = array("WARNING" => "warning", "CRITICAL" => "important", "UNKNOWN" => "info", "DOWN" => "inverse", "OK" => "success");
 $nagios_state_to_bar = array("WARNING" => "warning", "CRITICAL" => "danger", "UNKNOWN" => "info", "OK" => "success");
-$tag_to_badge = array("Action Taken" => "success", "No Action Taken" => "important", "N/A" => "default", "" => "default");
+$tag_to_badge = array("action" => "success", "noaction" => "important", "" => "default");
 $nagios_alert_tags = array("" => "Untagged", "issue" => "Action Taken: Service Issue (View clean)", "issuetimeperiod" => "Action Taken: Service Issue, timeperiod inappropriate (View clean)",
     "viewissue" => "Action Taken: View issue (network outage/site outage, service health questionable)", "incorrecttimeperiod" => "No Action Taken: Timeperiod not appropriate", 
     "downtimeexpired" => "No Action Taken: Work ongoing, downtime expired", "downtimenotset" => "No Action Taken: Work ongoing, downtime not set", 
@@ -443,7 +443,7 @@ function printOnCallTableFooter() {
 }
 
 function formatOnCallRowForPrint(array $n) {
-    global $nagios_state_to_badge, $tag_to_badge, $nagios_alert_tags, $sleep_state_icons, $sleep_state_levels;
+    global $nagios_state_to_badge, $tag_to_badge, $nagios_alert_tags, $nagios_tag_category_map, $sleep_state_icons, $sleep_state_levels;
 
     $timezone = getTimezoneSetting();
     date_default_timezone_set($timezone);
@@ -462,9 +462,7 @@ function formatOnCallRowForPrint(array $n) {
     $html = "<tr>";
     $html .= "<td>{$pretty_date} {$sleep_html}</td><td>{$n['hostname']}</td><td>{$n['service']}</td><td><pre><small>{$n['output']}</small></pre></td>";
     $html .= "<td><span class='label label-{$nagios_state_to_badge[$n['state']]}'>{$n['state']}</span></td></tr>";
-    $tag_bits = explode(':', $nagios_alert_tags[$n['tag']]);
-    $shorttag = array_shift($tag_bits);
-    $tag = ($n['tag'] != "") ? "<span class='label label-{$tag_to_badge[$shorttag]}'><i class='icon-tag'></i><b>{$nagios_alert_tags[$n['tag']]}</b></span>" : "";
+    $tag = ($n['tag'] != "") ? "<span class='label label-{$tag_to_badge[$nagios_tag_category_map[$n['tag']]]}'><i class='icon-tag'></i><b>{$nagios_alert_tags[$n['tag']]}</b></span>" : "";
     $notes = ($n['notes'] != "") ? "<i class='icon-info-sign'></i> {$n['notes']}" : "";
     if ( ($n['tag'] != "") || ($n['notes'] != "") ) {
         $html .= "<tr><td colspan='5'>{$tag}<br>{$notes}</td></tr>";

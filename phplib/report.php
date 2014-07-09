@@ -29,12 +29,16 @@ function renderStatusProgressBar($items, $total) {
  * Renders a table of tag summaries for a week or a year
  */
 function renderTagTable($tags, $total, $tag_lookup) {
-    global $tag_to_badge;
+    global $tag_to_badge, $nagios_tag_category_map;
     foreach ($tags as $type => $number) {
         $pct = round( ($number / $total) * 100, 2);
         $tag = $tag_lookup[$type];
-        $shorttag = array_shift(explode(':', $tag));
-        $html_status_summary .= "<tr><td><span class='label label-{$tag_to_badge[$shorttag]}'>{$tag}</span></td> <td> {$number} ({$pct}%) </td></tr>";
+        if (isset($nagios_tag_category_map[$type])) {
+            $label = $nagios_tag_category_map[$type];
+        } else {
+            $label = $type;
+        }
+        $html_status_summary .= "<tr><td><span class='label label-{$tag_to_badge[$label]}'>{$tag}</span></td> <td> {$number} ({$pct}%) </td></tr>";
     }
     return '<table class="table">' . $html_status_summary . '</table>';
 }
