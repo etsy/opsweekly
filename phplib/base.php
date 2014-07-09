@@ -67,6 +67,7 @@ function getTimezoneSetting() {
 }
 
 function getWeekRange($date) {
+    $date = array_shift(explode('(', $date));
     $ts = strtotime($date);
     $target_start = (date('l', $ts) == "Monday") ? "monday" : "last monday";
     $target_end = (date('l', $ts) == "Sunday") ? "sunday" : "next sunday";
