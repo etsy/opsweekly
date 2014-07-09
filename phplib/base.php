@@ -16,7 +16,7 @@ $pages = array("/index.php" => "Overview", "/add.php" => "Add", "/report.php" =>
 $pages_icon = array("/index.php" => "icon-home", "/add.php" => "icon-plus-sign", "/report.php" => "icon-list-alt", "/meeting.php" => "icon-bullhorn");
 $nagios_state_to_badge = array("WARNING" => "warning", "CRITICAL" => "important", "UNKNOWN" => "info", "DOWN" => "inverse", "OK" => "success");
 $nagios_state_to_bar = array("WARNING" => "warning", "CRITICAL" => "danger", "UNKNOWN" => "info", "OK" => "success");
-$tag_to_badge = array("Action Taken" => "important", "No Action Taken" => "success", "N/A" => "default", "" => "default");
+$tag_to_badge = array("Action Taken" => "success", "No Action Taken" => "important", "N/A" => "default", "" => "default");
 $nagios_alert_tags = array("" => "Untagged", "issue" => "Action Taken: Service Issue (View clean)", "issuetimeperiod" => "Action Taken: Service Issue, timeperiod inappropriate (View clean)",
     "viewissue" => "Action Taken: View issue (network outage/site outage, service health questionable)", "incorrecttimeperiod" => "No Action Taken: Timeperiod not appropriate", 
     "downtimeexpired" => "No Action Taken: Work ongoing, downtime expired", "downtimenotset" => "No Action Taken: Work ongoing, downtime not set", 
