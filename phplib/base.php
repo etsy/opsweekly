@@ -18,7 +18,7 @@ $nagios_state_to_badge = array("WARNING" => "warning", "CRITICAL" => "important"
 $nagios_state_to_bar = array("WARNING" => "warning", "CRITICAL" => "danger", "UNKNOWN" => "info", "OK" => "success");
 $tag_to_badge = array("action" => "success", "noaction" => "important", "" => "default");
 $nagios_alert_tags = array("" => "Untagged", "issue" => "Action Taken: Service Issue (View clean)", "issuetimeperiod" => "Action Taken: Service Issue, timeperiod inappropriate (View clean)",
-    "viewissue" => "Action Taken: View issue (network outage/site outage, service health questionable)", "incorrecttimeperiod" => "No Action Taken: Timeperiod not appropriate", 
+    "viewissue" => "Action Taken: View issue (network/site outage, service health questionable)", "incorrecttimeperiod" => "No Action Taken: Timeperiod not appropriate", 
     "downtimeexpired" => "No Action Taken: Work ongoing, downtime expired", "downtimenotset" => "No Action Taken: Work ongoing, downtime not set", 
     "thresholdincorrect" => "No Action Taken: Threshold adjustment required", "checkfaulty" => "No Action Taken: Check is faulty/requires modification", "na" => "N/A");
 $nagios_tag_categories = array("" => "Untagged", "action" => "Action Taken", "noaction" => "No Action Taken");
@@ -463,9 +463,9 @@ function formatOnCallRowForPrint(array $n) {
     $html .= "<td>{$pretty_date} {$sleep_html}</td><td>{$n['hostname']}</td><td>{$n['service']}</td><td><pre><small>{$n['output']}</small></pre></td>";
     $html .= "<td><span class='label label-{$nagios_state_to_badge[$n['state']]}'>{$n['state']}</span></td></tr>";
     $tag = ($n['tag'] != "") ? "<span class='label label-{$tag_to_badge[$nagios_tag_category_map[$n['tag']]]}'><i class='icon-tag'></i><b>{$nagios_alert_tags[$n['tag']]}</b></span>" : "";
-    $notes = ($n['notes'] != "") ? "<i class='icon-info-sign'></i> {$n['notes']}" : "";
+    $notes = ($n['notes'] != "") ? "<span><i class='icon-info-sign'></i> <b>{$n['contact']}:</b> {$n['notes']}</span>" : "";
     if ( ($n['tag'] != "") || ($n['notes'] != "") ) {
-        $html .= "<tr><td colspan='5'>{$tag}<br>{$notes}</td></tr>";
+        $html .= "<tr><td colspan='3'>{$tag}</td><td colspan='2'>{$notes}</td></tr>";
     } else {
         $html .= "<tr><td colspan='5'></td></tr>";
     }
