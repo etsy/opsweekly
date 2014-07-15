@@ -30,6 +30,7 @@ function renderStatusProgressBar($items, $total) {
  */
 function renderTagTable($tags, $total, $tag_lookup) {
     global $tag_to_badge, $nagios_tag_category_map;
+    arsort($tags);
     foreach ($tags as $type => $number) {
         $pct = round( ($number / $total) * 100, 2);
         $tag = $tag_lookup[$type];
