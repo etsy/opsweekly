@@ -205,7 +205,7 @@ The following are "Action Taken" tags, and their brief description:
 
 * Service Issue (View Clean): The service was affected, and this alert correctly saw the issue and alerted on it
 * Service Issue (timeperiod inappropriate, view clean): There was an issue but it could've alerted during another timeperiod, e.g. it could've waited until morning. 
-* View Issue (network outage/site outage, service health quesitonable): The service could've been okay or broken, but the monitoring system did not have a clear view of the system to say either way, but an alert was fired. 
+* View Issue (network/site outage, service health quesitonable): The service could've been okay or broken, but the monitoring system did not have a clear view of the system to say either way, but an alert was fired. 
 	* Most common use for this is a cascading failure/alert storm due to network outage with no parents setup
 	
 
