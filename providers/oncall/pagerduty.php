@@ -63,6 +63,9 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
             $time = strtotime($incident->created_on);
             $service = $incident->trigger_summary_data->subject;
             $output = $incident->trigger_details_html_url;
+            $output .= "\n";
+            $output .= json_encode($incident->trigger_summary_data, JSON_PRETTY_PRINT);
+            $output .= $incident->url;
 
             $notifications[] = array("time" => $time, "hostname" => "Pagerduty", "service" => $service, "output" => $output, "state" => "CRITICAL");
         }
