@@ -184,8 +184,12 @@ $oncall_providers = array(
         "lib" => "providers/oncall/pagerduty.php",
         "options" => array(
             "base_url" => "https://mycompany.pagerduty.com/api/v1",
+            // Supports two auth methods. Username/password or apikey.
+            // If you define apikey, then the username/password will be ignored
             "username" => "mylogin@mycompany.com",
-            "password" => "password"
+            "password" => "password",
+            // uncomment and define if you use apikeys
+            // "apikey" => "XXXXXX",
         ),
     ),
 );
