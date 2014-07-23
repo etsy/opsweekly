@@ -40,6 +40,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
     $base_url = $global_config['base_url'];
     $username = $global_config['username'];
     $password = $global_config['password'];
+    $apikey = $global_config['apikey'];
     $service_id = $team_config['pagerduty_service_id'];
 
     if ($base_url !== '' && $username !== '' && $password !== '' && $service_id !== '') {
@@ -51,7 +52,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
             'until' => date('c', $end),
         );
 
-        $incident_json = doPagerdutyAPICall('/incidents', $parameters, $base_url, $username, $password);
+        $incident_json = doPagerdutyAPICall('/incidents', $parameters, $base_url, $username, $password, $apikey);
         if (!$incidents = json_decode($incident_json)) {
             return 'Could not retrieve incidents from Pagerduty! Please check your login details';
         }
@@ -73,13 +74,22 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 
 }
 
-function doPagerdutyAPICall($path, $parameters, $pagerduty_baseurl, $pagerduty_username, $pagerduty_password) {
+function doPagerdutyAPICall($path, $parameters, $pagerduty_baseurl, $pagerduty_username, $pagerduty_password, $pagerduty_apikey) {
 
-    $context = stream_context_create(array(
-        'http' => array(
-            'header'  => "Authorization: Basic " . base64_encode("$pagerduty_username:$pagerduty_password")
-        )
-    ));
+    if (isset($pagerduty_apikey)) {
+        $context = stream_context_create(array(
+            'http' => array(
+                'header'  => "Authorization: Token token=$pagerduty_apikey"
+            )
+        ));
+    } else {
+
+        $context = stream_context_create(array(
+            'http' => array(
+                'header'  => "Authorization: Basic " . base64_encode("$pagerduty_username:$pagerduty_password")
+            )
+        ));
+    }
 
     $params = null;
     foreach ($parameters as $key => $value) {
