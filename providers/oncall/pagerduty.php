@@ -61,10 +61,35 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
         }
         foreach ($incidents->incidents as $incident) {
             $time = strtotime($incident->created_on);
-            $service = $incident->trigger_summary_data->subject;
+            
+            // try to determine and set the service
+            if (isset($incident->trigger_summary_data->subject)) {
+              $service = $incident->trigger_summary_data->subject;
+            } elseif (isset($incident->trigger_summary_data->SERVICEDESC)) {
+              $service = $incident->trigger_summary_data->SERVICEDESC;
+            } else {
+              $service = "unknown";
+            }
+            
             $output = $incident->trigger_details_html_url;
+            $output .= "\n";
+            
+            // Add to the output all the trigger_summary_data info
+            foreach ($incident->trigger_summary_data as $key => $key_data) {
+              $output .= "$key: $key_data\n";
+            }
+            
+            $output .= $incident->url;
+            
+            // try to determine the hostname
+            if (isset($incident->trigger_summary_data->HOSTNAME)) {
+              $hostname = $incident->trigger_summary_data->HOSTNAME;
+            } else {
+              // fallback is to just say it was pagerduty that sent it in
+              $hostname = "Pagerduty";
+            }
 
-            $notifications[] = array("time" => $time, "hostname" => "Pagerduty", "service" => $service, "output" => $output, "state" => "CRITICAL");
+            $notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "CRITICAL");
         }
         return $notifications;
 
