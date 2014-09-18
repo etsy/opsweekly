@@ -156,7 +156,7 @@ $weekly_providers = array(
 /**
  * Oncall providers
  * These are used to retrieve information given a time period about the alerts the requesting
- * user recieved.
+ * user received.
  **/
 $oncall_providers = array(
     "splunk" => array(

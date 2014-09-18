@@ -4,12 +4,12 @@
         <p class='lead'><?php echo $year_total_notifications; ?> notifications received this year 
             over <?php echo $num_weeks; ?> weeks of data (average of <?php echo $week_avg; ?> per week)</p>
         <h3>Alert Status Distribution</h3>
-        <p>Breakdown of the type of notifications recieved during the last year</p>
+        <p>Breakdown of the type of notifications received during the last year</p>
         <?php echo renderStatusProgressBar($year_status_agg, $year_status_agg_total); ?>
         <br />
 
         <h3>Tag Status Summary</h3>
-        <p>Breakdown of the tags applied to the notifications recieved during the last year</p>
+        <p>Breakdown of the tags applied to the notifications received during the last year</p>
         <?php echo renderTagTable($year_tag_agg, $year_tag_agg_total, $nagios_alert_tags) ?>
 
         <p>Breakdown of the tags applied (normalised)</p>
@@ -27,7 +27,7 @@
         <br />
 
         <h3>Top Notifying Hosts</h3>
-        <p>Hosts that recieved the most notifications during this year</p>
+        <p>Hosts that received the most notifications during this year</p>
         <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
@@ -47,7 +47,7 @@
         <?php } ?>
 
         <h3>Top Notifying Services</h3>
-        <p>Services that recieved the most notifications during this year</p>
+        <p>Services that received the most notifications during this year</p>
         <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>

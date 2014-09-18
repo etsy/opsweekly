@@ -124,7 +124,7 @@ include_once('phplib/nav.php');
                 ?>
 
                 <h3>Notification Time Map</h3>
-                <p>Grids read from top to bottom through hours, the darker the more alerts were recieved <small>(Hover over the blocks for a count)</small></p>
+                <p>Grids read from top to bottom through hours, the darker the more alerts were received <small>(Hover over the blocks for a count)</small></p>
                 <div id="cal-heatmap"></div>
                 <script type="text/javascript">
                 var time_data = <?php echo json_encode($time_counts) ?>;

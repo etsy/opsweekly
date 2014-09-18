@@ -3,12 +3,12 @@
         <h2>Week Stats <small> for week <?php echo $pretty_start; ?> - <?php echo $pretty_end; ?></small></h2>
         <p class='lead'><?php echo $total_notifications; ?> notifications received this week </p>
         <h3>Alert Status Distribution</h3>
-        <p>Breakdown of the type of notifications recieved during the week</p>
+        <p>Breakdown of the type of notifications received during the week</p>
         <?php echo renderStatusProgressBar($week_status_agg, $week_status_agg_total); ?>
         <br />
 
         <h3>Tag Status Summary</h3>
-        <p>Breakdown of the tags applied to the notifications recieved during the week</p>
+        <p>Breakdown of the tags applied to the notifications received during the week</p>
         <?php echo renderTagTable($week_tag_agg, $week_tag_agg_total, $nagios_alert_tags) ?>
 
         <p>Breakdown of the tags applied (normalised)</p>
@@ -26,7 +26,7 @@
         <br />
 
         <h3>Top Notifying Hosts</h3>
-        <p>Hosts that recieved the most notifications during this week</p>
+        <p>Hosts that received the most notifications during this week</p>
         <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
@@ -41,7 +41,7 @@
         </table>
 
         <h3>Top Notifying Services</h3>
-        <p>Services that recieved the most notifications during this week</p>
+        <p>Services that received the most notifications during this week</p>
         <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
@@ -74,7 +74,7 @@
 
 
         <h3>Notification Time Map</h3>
-        <p>Grids read from top to bottom through hours, the darker the more alerts were recieved <small>(Hover over the blocks for a count)</small></p>
+        <p>Grids read from top to bottom through hours, the darker the more alerts were received <small>(Hover over the blocks for a count)</small></p>
         <div id="cal-heatmap"></div>
         <script type="text/javascript">
         var time_data = <?php echo json_encode($week_time_counts) ?>;

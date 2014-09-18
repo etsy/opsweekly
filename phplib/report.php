@@ -6,7 +6,7 @@
 
 /*
  * renderStatusProgressBar()
- * Renders a bootstrap progress bar showing the various status of alerts recieved
+ * Renders a bootstrap progress bar showing the various status of alerts received
  */
 function renderStatusProgressBar($items, $total) {
     global $nagios_state_to_badge, $nagios_state_to_bar;
