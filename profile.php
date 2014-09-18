@@ -163,7 +163,7 @@ if(!$oncall_ranges = getAvailableOnCallRangesForUser($my_username)) {
         </ul>
         <br />
         <h4>Personal Notification Time Map</h4>
-            <p>This illustrates the hours of the day you recieved notifications during your on call periods. </p>
+            <p>This illustrates the hours of the day you received notifications during your on call periods. </p>
             <div id="cal-heatmap"></div>
             <script type="text/javascript">
             var time_data = <?php echo json_encode($timemap_data) ?>;
