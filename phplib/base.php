@@ -120,23 +120,103 @@ function getOnCallWeekRangeWithTZ($date) {
     return array($return_start, $return_end);
 }
 
-function connectToDB() {
-    global $mysql_host, $mysql_user, $mysql_pass;
-    $mysql_db = getTeamConfig('database');
+class db {
+    static $dbh = false;
 
-    if(function_exists("mysql_connect")) {
-        if(!mysql_connect($mysql_host, $mysql_user, $mysql_pass)) {
-            echo insertNotify("critical", "There was a fatal error connecting to the database. Please check your server and credentials.");
-            return false;
-        }
-        if(!mysql_select_db($mysql_db)) {
-            echo insertNotify("critical", "There was a fatal error connecting to the database. The database could not be selected in MySQL.");
+    static function connect() {
+        global $mysql_host, $mysql_user, $mysql_pass;
+        $mysql_db = getTeamConfig('database');
+
+        if(function_exists("mysqli_connect")) {
+            $mysqli = new mysqli($mysql_host, $mysql_user, $mysql_pass, $mysql_db);
+            if ($mysqli->connect_error) {
+                echo insertNotify("critical", $mysqli->connect_error);
+                return false;
+            }
+            self::$dbh = $mysqli;
+        } else if(function_exists("mysql_connect")) {
+            if(!$mysql = mysql_connect($mysql_host, $mysql_user, $mysql_pass)) {
+                echo insertNotify("critical", mysql_error());
+                return false;
+            }
+            if(!mysql_select_db($mysql_db, $mysql)) {
+                echo insertNotify("critical", mysql_error());
+                return false;
+            }
+        } else {
+            echo "MySQL support is required";
             return false;
         }
         return true;
-    } else {
-        echo "MySQL support is required";
-        return false;
+    }
+
+    static function query($query) {
+        if (!self::$dbh) self::connect();
+        if (!self::$dbh) return false;
+        if (self::$dbh instanceof mysqli) {
+            return self::$dbh->query($query);
+        } else {
+            return mysql_query($query, self::$dbh);
+        }
+    }
+
+    static function error() {
+        if (self::$dbh instanceof mysqli) {
+            return self::$dbh->error;
+        } else {
+            return mysql_error();
+        }
+    }
+
+    static function escape($string) {
+        if (!self::$dbh) self::connect();
+        if (!self::$dbh) return false;
+        if (self::$dbh instanceof mysqli) {
+            return self::$dbh->real_escape_string($string);
+        } else {
+            return mysql_real_escape_string($string, self::$dbh);
+        }
+    }
+
+    static function num_rows($stmt) {
+        if (!self::$dbh) self::connect();
+        if (!self::$dbh) return false;
+        if (self::$dbh instanceof mysqli) {
+            return $stmt->num_rows;
+        } else {
+            return mysql_num_rows($stmt);
+        }
+    }
+
+    static function fetch_assoc($stmt) {
+        if (!self::$dbh) self::connect();
+        if (!self::$dbh) return false;
+        if (self::$dbh instanceof mysqli) {
+            if ($stmt->num_rows > 0) {
+                return $stmt->fetch_assoc();
+            } else {
+                return false;
+            }
+        } else {
+            if (mysql_num_rows($stmt) > 0) {
+                return mysql_fetch_assoc($stmt);
+            } else {
+                return false;
+            }
+        }
+    }
+
+    static function fetch_all($stmt) {
+        if (!self::$dbh) self::connect();
+        if (!self::$dbh) return false;
+        if (self::$dbh instanceof mysqli) {
+            return $stmt->fetch_all(MYSQLI_ASSOC);
+        } else {
+            while($result = mysql_fetch_assoc($stmt)) {
+                $return[] = $result;
+            }
+            return $return;
+        }
     }
 }
 
@@ -159,69 +239,34 @@ function generateMeetingNotesID($range_start, $range_end) {
 }
 
 function checkForPreviousWeeklyUpdate($report_id) {
-    if (connectToDB()) {
-        $report_id = mysql_real_escape_string($report_id);
-        $results = mysql_query("SELECT * FROM generic_weekly where report_id='{$report_id}' order by id DESC LIMIT 1");
-        if (mysql_num_rows($results) == 1) {
-            return mysql_fetch_assoc($results);
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
+    $report_id = db::escape($report_id);
+    $results = db::query("SELECT * FROM generic_weekly where report_id='{$report_id}' order by id DESC LIMIT 1");
+    return db::fetch_assoc($results);
 }
 
 function checkForPreviousMeetingNotes($report_id) {
-    if (connectToDB()) {
-        $report_id = mysql_real_escape_string($report_id);
-        $results = mysql_query("SELECT * FROM meeting_notes where report_id='{$report_id}' order by id DESC LIMIT 1");
-        if (mysql_num_rows($results) == 1) {
-            return mysql_fetch_assoc($results);
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
+    $report_id = db::escape($report_id);
+    $results = db::query("SELECT * FROM meeting_notes where report_id='{$report_id}' order by id DESC LIMIT 1");
+    return db::fetch_assoc($results);
 }
 
 function checkForPreviousOnCallItem($alert_id) {
-    connectToDB();
-    $alert_id = mysql_real_escape_string($alert_id);
-    $results = mysql_query("SELECT * FROM oncall_weekly where alert_id='{$alert_id}' order by id DESC LIMIT 1");
-    if (mysql_num_rows($results) == 1) {
-        return mysql_fetch_assoc($results);
-    } else {
-        return false;
-    }
-
+    $alert_id = db::escape($alert_id);
+    $results = db::query("SELECT * FROM oncall_weekly where alert_id='{$alert_id}' order by id DESC LIMIT 1");
+    return db::fetch_assoc($results);
 }
 
 function checkForUserProfile($username) {
-    $alert_id = mysql_real_escape_string($username);
-    if (connectToDB()) {
-        $results = mysql_query("SELECT * FROM user_profile where ldap_username='{$username}' LIMIT 1");
-        if (mysql_num_rows($results) == 1) {
-            return mysql_fetch_assoc($results);
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-
+    $username = db::escape($username);
+    $results = db::query("SELECT * FROM user_profile where ldap_username='{$username}' LIMIT 1");
+    return db::fetch_assoc($results);
 }
 
 function guessPersonOnCall($range_start, $range_end) {
-    if(connectToDB()) {
-        $results = mysql_query("SELECT DISTINCT(contact) FROM oncall_weekly where range_start='{$range_start}' AND range_end='{$range_end}'  order by id DESC LIMIT 1");
-        if (mysql_num_rows($results) == 1) {
-            $result = mysql_fetch_assoc($results);
-            return $result['contact'];
-        } else {
-            return false;
-        }
+    $results = db::query("SELECT DISTINCT(contact) FROM oncall_weekly where range_start='{$range_start}' AND range_end='{$range_end}'  order by id DESC LIMIT 1");
+    if (db::num_rows($results) == 1) {
+        $result = db::fetch_assoc($results);
+        return $result['contact'];
     } else {
         return false;
     }
@@ -238,119 +283,45 @@ function printHeaderNav() {
 }
 
 function getGenericWeeklyReportsForWeek($range_start, $range_end) {
-    connectToDB();
     $query = "SELECT * FROM generic_weekly WHERE id IN (SELECT max(id) FROM generic_weekly where range_start='{$range_start}' AND range_end='{$range_end}' GROUP BY(user)) ORDER BY user ASC;";
-    if(!$results = mysql_query($query)) {
-        return false;
-    } else {
-        if (mysql_num_rows($results) > 0) {
-            while($result = mysql_fetch_assoc($results)) {
-                $return[] = $result;
-            }
-            return $return;
-        } else {
-            return false;
-        }
-    }
+    $results = db::query($query);
+    return db::fetch_all($results);
 }
 
 function getGenericWeeklyReportsForUser($username) {
-    if (connectToDB()) {
-        $username = mysql_real_escape_string($username);
-        $query = "SELECT * FROM generic_weekly WHERE id IN (SELECT max(id) FROM generic_weekly where user='{$username}' GROUP BY(range_start)) ORDER BY range_end DESC;";
-        if(!$results = mysql_query($query)) {
-            return false;
-        } else {
-            if (mysql_num_rows($results) > 0) {
-                while($result = mysql_fetch_assoc($results)) {
-                    $return[] = $result;
-                }
-                return $return;
-            } else {
-                return false;
-            }
-        }
-    } else {
-        return false;
-    }
+    $username = db::escape($username);
+    $query = "SELECT * FROM generic_weekly WHERE id IN (SELECT max(id) FROM generic_weekly where user='{$username}' GROUP BY(range_start)) ORDER BY range_end DESC;";
+    $results = db::query($query);
+    return db::fetch_all($results);
 }
 
 function getOnCallReportForWeek($range_start, $range_end) {
-    connectToDB();
     $query = "SELECT a.* FROM oncall_weekly a, (SELECT max(id) as id, alert_id FROM oncall_weekly WHERE range_start='{$range_start}' AND range_end='{$range_end}' GROUP BY(alert_id)) b WHERE a.id = b.id ORDER BY a.timestamp ASC;";
-    if(!$results = mysql_query($query)) {
-        return false;
-    } else {
-        if (mysql_num_rows($results) > 0) {
-            while($result = mysql_fetch_assoc($results)) {
-                $return[] = $result;
-            }
-            return $return;
-        } else {
-            return false;
-        }
-    }
+    $results = db::query($query);
+    return db::fetch_all($results);
 }
 
 function getAvailableOnCallRangesForLastYear() {
-    connectToDB();
     $year_ago = strtotime("-1 year");
     $query = "SELECT DISTINCT(range_start), range_end FROM oncall_weekly where range_start > '{$year_ago}' order by range_start ASC;";
-    if(!$results = mysql_query($query)) {
-        return false;
-    } else {
-        if (mysql_num_rows($results) > 0) {
-            while($result = mysql_fetch_assoc($results)) {
-                $return[] = $result;
-            }
-            return $return;
-        } else {
-            return false;
-        }
-    }
+    $results = db::query($query);
+    return db::fetch_all($results);
 }
 
 function getAvailableOnCallRangesForUser($username) {
-    connectToDB();
-    $username = mysql_real_escape_string($username);
+    $username = db::escape($username);
     $query = "SELECT DISTINCT(range_start), range_end FROM oncall_weekly where contact = '{$username}' order by range_start ASC;";
-    if(!$results = mysql_query($query)) {
-        return false;
-    } else {
-        if (mysql_num_rows($results) > 0) {
-            while($result = mysql_fetch_assoc($results)) {
-                $return[] = $result;
-            }
-            return $return;
-        } else {
-            return false;
-        }
-    }
+    $results = db::query($query);
+    return db::fetch_all($results);
 }
 
 function getListOfPeopleWithReports() {
-    if(connectToDB()) {
-        $query = "SELECT DISTINCT(user) FROM generic_weekly ORDER BY user ASC;";
-        if(!$results = mysql_query($query)) {
-            return false;
-        } else {
-            if (mysql_num_rows($results) > 0) {
-                while($result = mysql_fetch_assoc($results)) {
-                    $return[] = $result['user'];
-                }
-                return $return;
-            } else {
-                return false;
-            }
-        }
-    } else {
-        return false;
-    }
+    $query = "SELECT DISTINCT(user) FROM generic_weekly ORDER BY user ASC;";
+    $results = db::query($query);
+    return db::fetch_all($results);
 }
 
 function handleSearch($search_type, $search_term) {
-    connectToDB();
-
     switch ($search_type) {
     case 'service':
         $query = "SELECT a.* FROM oncall_weekly a, (SELECT max(id) as id, alert_id FROM oncall_weekly WHERE service like '%{$search_term}%' GROUP BY(alert_id)) b WHERE a.id = b.id ORDER BY a.timestamp DESC;";
@@ -367,18 +338,8 @@ function handleSearch($search_type, $search_term) {
     default:
         return false;
     }
-    if(!$results = mysql_query($query)) {
-        return false;
-    } else {
-        if (mysql_num_rows($results) > 0) {
-            while($result = mysql_fetch_assoc($results)) {
-                $return[] = $result;
-            }
-            return $return;
-        } else {
-            return false;
-        }
-    }
+    $results = db::query($query);
+    return db::fetch_all($results);
 }
 
 function formatSearchResults(array $results, $search_type, $highlight_term, $limit = 0, $start = 0) {
