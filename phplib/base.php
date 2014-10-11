@@ -318,7 +318,10 @@ function getAvailableOnCallRangesForUser($username) {
 function getListOfPeopleWithReports() {
     $query = "SELECT DISTINCT(user) FROM generic_weekly ORDER BY user ASC;";
     $results = db::query($query);
-    return db::fetch_all($results);
+    foreach(db::fetch_all($results) as $result) {
+        $people[] = $result['user'];
+    }
+    return $people;
 }
 
 function handleSearch($search_type, $search_term) {
