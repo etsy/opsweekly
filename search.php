@@ -1,9 +1,8 @@
 <?php
 
 include_once("phplib/base.php");
-connectToDB();
 
-$query = ((isset($_GET['query'])) && ($_GET['query'] != "")) ? mysql_real_escape_string($_GET['query']) : null;
+$query = ((isset($_GET['query'])) && ($_GET['query'] != "")) ? db::escape($_GET['query']) : null;
 
 if ($query) {
     // Try and pick out our filters

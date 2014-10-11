@@ -2,12 +2,12 @@
 
 include_once 'phplib/base.php';
 
-if (!connectToDB()) {
+if (!db::connect()) {
     echo "Database connection failed, cannot continue. ";
 } else {
     $username = getUsername();
-    $range_start = mysql_real_escape_string($_POST['oncall']['range_start']);
-    $range_end = mysql_real_escape_string($_POST['oncall']['range_end']);
+    $range_start = db::escape($_POST['oncall']['range_start']);
+    $range_end = db::escape($_POST['oncall']['range_end']);
 
     logline("Started adding a new oncall update for {$username} with range_start: {$range_start} and range_end: {$range_end}...");
 
@@ -35,13 +35,13 @@ if (!connectToDB()) {
             $mtts = -1;
             $sleep_level = -1;
             $confidence = -1;
-            $timestamp = mysql_real_escape_string($n['time']);
-            $hostname = mysql_real_escape_string($n['hostname']);
-            $output = mysql_real_escape_string($n['output']);
-            $service = mysql_real_escape_string($n['service']);
-            $state = mysql_real_escape_string($n['state']);
-            $tag = mysql_real_escape_string($n['tag']);
-            $notes = mysql_real_escape_string(htmlentities($n['notes'], ENT_QUOTES));
+            $timestamp = db::escape($n['time']);
+            $hostname = db::escape($n['hostname']);
+            $output = db::escape($n['output']);
+            $service = db::escape($n['service']);
+            $state = db::escape($n['state']);
+            $tag = db::escape($n['tag']);
+            $notes = db::escape(htmlentities($n['notes'], ENT_QUOTES));
             $alert_id = generateOnCallAlertID($timestamp, $hostname, $service);
 
             if ($sleep) {
@@ -60,9 +60,9 @@ if (!connectToDB()) {
                 ('$alert_id', '$range_start', '$range_end', '$timestamp', '$hostname', '$service', '$state', '$username', '$output', '$tag', '$sleep_state', '$mtts', '$sleep_level', '$confidence','$notes')";
 
             logline("Processing on call line with data: $query");
-            if (!mysql_query($query)) {
-                echo "Database update failed, error: " . mysql_error();
-                logline("Database update failed, error: " . mysql_error());
+            if (!db::query($query)) {
+                echo "Database update failed, error: " . db::error();
+                logline("Database update failed, error: " . db::error());
             }
         }
         logline("Everything worked great, redirecting the user with success");
