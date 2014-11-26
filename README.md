@@ -1,4 +1,5 @@
 # Opsweekly [![Build Status](https://travis-ci.org/etsy/opsweekly.svg?branch=master)](https://travis-ci.org/etsy/opsweekly)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/etsy/opsweekly.git)
 
 ## What is Opsweekly?
 

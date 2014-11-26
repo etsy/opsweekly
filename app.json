@@ -1,0 +1,8 @@
+{
+    "name": "Opsweekly",
+    "description": "Weekly report tracker, an on call categorisation and reporting tool, a sleep tracker, a meeting organiser and a coffee maker all in one.",
+    "website": "https://github.com/etsy/opsweekly",
+    "repository": "https://github.com/etsy/opsweekly",
+    "success_url": "/",
+    "keywords": []
+}
