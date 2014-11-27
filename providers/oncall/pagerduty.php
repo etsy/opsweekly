@@ -61,7 +61,13 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 	    if (count($incidents->incidents) == 0) {
 		return array();
 	    }
+	    logline("Total incidents: " . $incidents->total);
+	    logline("Limit in this request: " . $incidents->limit);
+	    logline("Offset: " . $incidents->offset);
+
 	    $running_total += count($incidents->incidents);
+
+	    logline("Running total: " . $running_total);
 	    foreach ($incidents->incidents as $incident) {
 		$time = strtotime($incident->created_on);
 
