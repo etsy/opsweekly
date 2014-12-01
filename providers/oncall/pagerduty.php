@@ -36,7 +36,6 @@
  */
 
 function getOnCallNotifications($name, $global_config, $team_config, $start, $end) {
-
     $base_url = $global_config['base_url'];
     $username = $global_config['username'];
     $password = $global_config['password'];
@@ -44,12 +43,27 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
     $service_id = $team_config['pagerduty_service_id'];
 
     if ($base_url !== '' && $username !== '' && $password !== '' && $service_id !== '') {
-	$running_total = 0;
-	do {
+      // convert single PagerDuty service, to array construct in order to hold multiple services.
+      if (!is_array($service_id)) {
+        $service_id = array($service_id);
+      }
+
+      // loop through all PagerDuty services
+      foreach ($service_id as $sid) {
+        // check if the service id is formated correctly
+        if (!sanitizePagerDutyServiceId($sid)) {
+            logline('Incorect format for PagerDuty Service ID: ' . $sid);
+            // skip to the next Service ID in the array
+            continue;
+        }
+
+	// loop through PagerDuty's maximum incidents count per API request.
+        $running_total = 0;
+        do {
 	    // Connect to the Pagerduty API and collect all incidents in the time period.
 	    $parameters = array(
 		'since' => date('c', $start),
-		'service' => $service_id,
+		'service' => $sid,
 		'until' => date('c', $end),
 		'offset' => $running_total,
 	    );
@@ -58,9 +72,11 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 	    if (!$incidents = json_decode($incident_json)) {
 		return 'Could not retrieve incidents from Pagerduty! Please check your login details';
 	    }
+	    // skip if no incidents are recorded
 	    if (count($incidents->incidents) == 0) {
-		return array();
+                continue;
 	    }
+	    logline("Incidents on Service ID: " . $sid);
 	    logline("Total incidents: " . $incidents->total);
 	    logline("Limit in this request: " . $incidents->limit);
 	    logline("Offset: " . $incidents->offset);
@@ -101,12 +117,16 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 		$notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "CRITICAL");
 	    }
         } while ($running_total < $incidents->total);
+      }
+      // if no incidents are reported, don't generate the table
+      if (count($notifications) == 0 ) {
+        return array();
+      } else {
         return $notifications;
-
+      }
     } else {
         return false;
     }
-
 }
 
 function doPagerdutyAPICall($path, $parameters, $pagerduty_baseurl, $pagerduty_username, $pagerduty_password, $pagerduty_apikey) {
@@ -171,4 +191,12 @@ function whoIsOnCall($schedule_id, $time = null) {
 
 }
 
+function sanitizePagerDutyServiceId($service_id) {
+    $pattern = '/^[A-Z0-9]{7}$/';
+    if (preg_match($pattern, $service_id)) {
+        return true;
+    } else {
+        return false;
+    }
+}
 ?>

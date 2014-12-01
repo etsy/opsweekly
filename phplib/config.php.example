@@ -86,7 +86,10 @@ $teams = array(
         "oncall" => array(
             "provider" => "pagerduty",
             "provider_options" => array(
+                // Single PagerDuty Service id
                 "pagerduty_service_id" => 'AB12CDE',
+                // Multiple PagerDuty Service ids are set in the format array('XXYYZZ1', 'AABBCC2') etc...
+                // "pagerduty_service_id" => array('AB12CDE', 'CC23DDE'),
             ),
             "timezone" => "America/New_York",
             "start" => "monday 12:00",
