@@ -210,13 +210,15 @@ class db {
         if (!self::$dbh) self::connect();
         if (!self::$dbh) return false;
         if (self::$dbh instanceof mysqli) {
-            return $stmt->fetch_all(MYSQLI_ASSOC);
+            while($result = $stmt->fetch_assoc()) {
+                $return[] = $result;
+            }
         } else {
             while($result = mysql_fetch_assoc($stmt)) {
                 $return[] = $result;
             }
-            return $return;
         }
+        return $return;
     }
 }
 
