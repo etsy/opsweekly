@@ -58,7 +58,7 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
    * `mysql> grant all on opsweekly.* to opsweekly_user@localhost IDENTIFIED BY 'my_password';`
 1. Load the database schema into MySQL, e.g. `mysql -u opsweekly_user opsweekly < opsweekly.sql`
 1. [Teach Opsweekly how to authenticate your users](#authenticating-with-opsweekly).
-1. Move config.php.example to config.php, edit with your favourite editor (more detail below)
+1. Move phplib/config.php.example to phplib/config.php, edit with your favourite editor (more detail below)
 1. Load Opsweekly in your browser
 1. Reward yourself with a refreshing beverage.
 
