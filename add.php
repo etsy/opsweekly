@@ -73,6 +73,12 @@ include_once('phplib/nav.php')
                 <textarea class="textarea span7" name="weeklyupdate" placeholder="Enter Update" style="height: 500px"><?php echo $previous_report  ?></textarea>
                 <script>
                     $('.textarea').wysihtml5({"image": false, "color": false});
+                    var wysihtml5Editor = $(".textarea").data("wysihtml5").editor;
+                    wysihtml5Editor.observe("focus", function() {
+                        if ($('a[data-dismiss="alert"]').html() !== undefined) {
+                            $('a[data-dismiss="alert"]').click();
+                        }
+                    });
                 </script>
                 <input type="hidden" name="range_start" value="<?php echo $start_ts ?>">
                 <input type="hidden" name="range_end" value="<?php echo $end_ts ?>">
