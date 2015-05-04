@@ -28,6 +28,7 @@ class GithubHints {
         $this->username = $username;
         $this->events_from = $events_from;
         $this->events_to = $events_to;
+        $this->github_token = $config['github_token'];
     }
 
 
@@ -40,6 +41,7 @@ class GithubHints {
             $html = "<ul>";
             foreach ($activities as $activity) {
                 # There are other activity types other than commit, but for now we'll pretend they don't exist.
+                # This block handles direct requests to github.com/username.json
                 if (isset($activity->repository->owner)) {
                     $friendly_name = "{$activity->repository->owner}/{$activity->repository->name}";
                     $url_base = "{$activity->repository->url}/commit/";
@@ -47,6 +49,18 @@ class GithubHints {
                         foreach ($activity->payload->shas as $commit) {
                             $html .= '<li><a href="' . $url_base . $commit[0] . '" target="_blank">';
                             $html .= "{$friendly_name}</a> - {$commit[2]}</li>";
+                        }
+                    }
+                }
+
+                # This block handles requests via api URL
+                if (isset($activity->org->login)) {
+                    $friendly_name = $activity->repo->name;
+                    $url_base = "{$this->github_url}/{$activity->repo->name}/commit/";
+                    if(isset($activity->payload->commits)) {
+                        foreach ($activity->payload->commits as $commit) {
+                            $html .= "<li><a href=\"{$url_base}{$commit->sha}\">";
+                            $html .= "{$friendly_name}</a> - {$commit->message}</li>";
                         }
                     }
                 }
@@ -61,7 +75,12 @@ class GithubHints {
     }
 
     private function getGithubActivity() {
-        if (false == ($json = @file_get_contents("{$this->github_url}/{$this->username}.json"))) {
+        if($this->github_token != false) {
+            $url = "{$this->github_url}/api/v3/users/{$this->username}/events?access_token={$this->github_token}";
+        } else {
+            $url = "{$this->github_url}/{$this->username}.json";
+        }
+        if (false == ($json = @file_get_contents($url))) {
             return false;
         }
 
@@ -74,4 +93,3 @@ class GithubHints {
 
 }
 ?>
-
