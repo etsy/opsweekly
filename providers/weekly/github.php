@@ -28,9 +28,12 @@ class GithubHints {
         $this->username = $username;
         $this->events_from = $events_from;
         $this->events_to = $events_to;
-        $this->github_token = $config['github_token'];
+        if(isset($config['github_token'])) {
+            $this->github_token = $config['github_token'];
+        } else {
+            $this->github_token = false;
+        }
     }
-
 
     public function printHints() {
         if(!$activities = $this->getGithubActivity()) {
@@ -90,6 +93,5 @@ class GithubHints {
             return $gh_activity;
         }
     }
-
 }
 ?>
