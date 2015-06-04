@@ -2,7 +2,9 @@
     <div class="span12">
         <h2>Overall stats <small> for last year </small></h2>
         <p class='lead'><?php echo $year_total_notifications; ?> notifications received this year 
-            over <?php echo $num_weeks; ?> weeks of data (average of <?php echo $week_avg; ?> per week)</p>
+            over <?php echo $num_weeks; ?> weeks of data (average of <?php echo $week_avg; ?> per week)<br>
+            Most pages in one week: <?php echo $year_week_most_pages; ?><br>
+            Fewest pages in one week: <?php echo $year_week_fewest_pages; ?></p>
         <h3>Alert Status Distribution</h3>
         <p>Breakdown of the type of notifications received during the last year</p>
         <?php echo renderStatusProgressBar($year_status_agg, $year_status_agg_total); ?>

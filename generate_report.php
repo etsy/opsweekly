@@ -103,6 +103,8 @@ if ($report_type == "week") { // Weekly report.. Pretty simple, get the week, pr
     $year_mtts_total = 0;
     $year_rtts_total = 0;
     $year_ntts_count = 0;
+    $year_week_most_pages = 0;
+    $year_week_fewest_pages = 0;
     $per_day_total = array();
     $per_day_graph_data[] = array("Day of Week", "Alerts");
 
@@ -116,6 +118,12 @@ if ($report_type == "week") { // Weekly report.. Pretty simple, get the week, pr
         foreach ($weeks as $week) {
             $results = getOnCallReportForWeek($week['range_start'], $week['range_end']);
             $year_total_notifications = $year_total_notifications + count($results);
+            if (count($results) > $year_week_most_pages) {
+                $year_week_most_pages = count($results);
+            }
+            if (count($results) < $year_week_fewest_pages) {
+                $year_week_fewest_pages = count($results);
+            }
 
             $week_status_summary = array("CRITICAL" => 0, "WARNING" => 0, "DOWN" => 0, "UNKNOWN" => 0);
             $week_tag_summary = array("action" => 0, "noaction" => 0);
