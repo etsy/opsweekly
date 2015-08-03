@@ -42,6 +42,9 @@ function getUsername() {
  * display_name: Used for display purposes, your nice team name.
  * email_report_to: The email address the weekly reports users write should be emailed to
  * database: The name of the MySQL database the data for this team is stored in
+ * event_versioning: Set to 'on' to store each event with a unique id each time the on-call report is saved.
+ *                   Set to 'off' to only update existing events and insert new ones each time the on-call report is saved. Makes for a cleaner database.
+ *                   If undefined, defaults to 'on', for backwards compatibility.
  * oncall: false or an array. If false, hides the oncall sections of the interface. If true, please complete the other information.
  *   - provider: The plugin you wish to use to retrieve on call information for the user to complete
  *   - provider_options: An array of options that you wish to pass to the provider for this team's on call searching
@@ -58,6 +61,7 @@ $teams = array(
         "display_name" => "Ops",
         "email_report_to" => "ops@mycompany.com",
         "database" => "opsweekly",
+        "event_versioning" => "off",
         "oncall" => array(
             "provider" => "splunk",
             "provider_options" => array(

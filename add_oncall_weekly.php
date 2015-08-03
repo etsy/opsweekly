@@ -30,6 +30,14 @@ if (!db::connect()) {
             logline("No need to do sleep tracking because {$username} has no provider chosen");
         }
 
+        $event_versioning = getTeamConfig('event_versioning');
+        // We'll create an array of value strings for both INSERT and UPDATE
+        // statements that will be submitted after iterating over all the
+        // notifications we've found. For notifications found to already exist
+        // in the database, we'll perform UPDATEs. Otherwise we'll INSERT a new
+        // row.
+        $insert_values = array();
+        $update_values = array();
         foreach($_POST['oncall']['notifications'] as $id => $n) {
             $sleep_state = -1;
             $mtts = -1;
@@ -56,13 +64,77 @@ if (!db::connect()) {
 
             }
 
-            $query = "INSERT INTO oncall_weekly (alert_id, range_start, range_end, timestamp, hostname, service, state, contact, output, tag, sleep_state, mtts, sleep_level, sleep_confidence, notes) VALUES
-                ('$alert_id', '$range_start', '$range_end', '$timestamp', '$hostname', '$service', '$state', '$username', '$output', '$tag', '$sleep_state', '$mtts', '$sleep_level', '$confidence','$notes')";
+            // By default, assume events will be INSERTs. This is important in case
+            // we want event versioning and can simply push this string into
+            // the $insert_values array to be used in a single INSERT statement.
+            $values = "('$alert_id', '$range_start', '$range_end', '$timestamp', '$hostname', '$service', '$state', '$username', '$output', '$tag', '$sleep_state', '$mtts', '$sleep_level', '$confidence','$notes')";
 
-            logline("Processing on call line with data: $query");
-            if (!db::query($query)) {
-                echo "Database update failed, error: " . db::error();
-                logline("Database update failed, error: " . db::error());
+            // If event versioning is not defined or is explicitly enabled...
+            if (!$event_versioning || (isset($event_versioning) && (strcmp($event_versioning, "on")) == 0)) {
+                array_push($insert_values, $values); # Push to the $insert_values array and move on.
+            // If event versioning is explicitly disabled...
+            } elseif (isset($event_versioning) && (strcmp($event_versioning, "off")) == 0) {
+                // See if this event exists in the database already.
+                $select_query = "SELECT 1 from oncall_weekly WHERE alert_id='{$alert_id}'";
+                $result = db::query($select_query);
+                if ($result) {
+                    // If there's at least 1 row returned, the event has already
+                    // been stored. We'll update it.
+                    if ($result->num_rows > 0) {
+                    // Create a hash representing the values. We'll use the keys to
+                    // specifiy the column names we're updating.
+                    $values = array('alert_id'          => $alert_id,
+                                    'range_start'       => $range_start,
+                                    'range_end'         => $range_end,
+                                    'timestamp'         => $timestamp,
+                                    'hostname'          => $hostname,
+                                    'service'           => $service,
+                                    'state'             => $state,
+                                    'contact'           => $username,
+                                    'output'            => $output,
+                                    'tag'               => $tag,
+                                    'sleep_state'       => $sleep_state,
+                                    'mtts'              => $mtts,
+                                    'sleep_level'       => $sleep_level,
+                                    'sleep_confidence'  => $confidence,
+                                    'notes'             => $notes);
+                        array_push($update_values, $values);
+                    // This is a fresh event.
+                    } else {
+                        array_push($insert_values, $values);
+                    }
+                // We failed query the database for the event.
+                } else {
+                    echo "Database select failed, error: " . db::error();
+                    logline("Database select failed, error: " . db::error());
+                }
+    
+                $result->free(); // Free it up, y'all.
+            }
+        }
+        // Do we have INSERTs and/or UPDATEs to execute?
+        if (count($insert_values) > 0) {
+            $insert_values_string = implode(', ', $insert_values);
+            $insert_query = "INSERT INTO oncall_weekly (alert_id, range_start, range_end, timestamp, hostname, service, state, contact, output, tag, sleep_state, mtts, sleep_level, sleep_confidence, notes) VALUES {$insert_values_string}";
+            if (!db::query($insert_query)) {
+                echo "Database insert failed, error: " . db::error();
+                logline("Database insert failed, error: " . db::error());
+            }
+        }
+        // NOTE: This doesn't solve for entries that are already duplicated.
+        // But this should prevent future entries from being duplicated.
+        if (count($update_values) > 0) {
+            foreach ($update_values as $update_hash) {
+                $set_columns = array();
+                foreach ($update_hash as $column => $value) {
+                    array_push($set_columns, "{$column}='{$value}'");
+                }
+                $update_values_string = implode(', ', $set_columns);
+                $update_query = "UPDATE oncall_weekly SET {$update_values_string} WHERE alert_id='{$update_hash['alert_id']}'";
+                if (!db::query($update_query)) {
+                    echo "Database update failed, error: " . db::error();
+                    logline("Database update failed, error: " . db::error());
+                }
             }
         }
         logline("Everything worked great, redirecting the user with success");
