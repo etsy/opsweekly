@@ -298,7 +298,8 @@ function getGenericWeeklyReportsForUser($username) {
 }
 
 function getOnCallReportForWeek($range_start, $range_end) {
-    $query = "SELECT a.* FROM oncall_weekly a, (SELECT max(id) as id, alert_id FROM oncall_weekly WHERE range_start='{$range_start}' AND range_end='{$range_end}' GROUP BY(alert_id)) b WHERE a.id = b.id ORDER BY a.timestamp ASC;";
+    // Pull all notifications except those that have been defined as hidden.
+    $query = "SELECT * FROM oncall_weekly WHERE range_start='{$range_start}' AND range_end='{$range_end}' AND hide_event = '0' ORDER BY timestamp ASC;";
     $results = db::query($query);
     return db::fetch_all($results);
 }
