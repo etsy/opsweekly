@@ -351,10 +351,10 @@ function getMostRecentEventTimestampFromDb($range_start, $range_end) {
 function handleSearch($search_type, $search_term) {
     switch ($search_type) {
     case 'service':
-        $query = "SELECT a.* FROM oncall_weekly a, (SELECT max(id) as id, alert_id FROM oncall_weekly WHERE service like '%{$search_term}%' GROUP BY(alert_id)) b WHERE a.id = b.id ORDER BY a.timestamp DESC;";
+        $query = "SELECT * FROM oncall_weekly WHERE service LIKE '%{$search_term}%' AND hide_event = '0' ORDER BY timestamp DESC;";
         break;
     case 'host':
-        $query = "SELECT a.* FROM oncall_weekly a, (SELECT max(id) as id, alert_id FROM oncall_weekly WHERE hostname like '%{$search_term}%' GROUP BY(alert_id)) b WHERE a.id = b.id ORDER BY a.timestamp DESC;";
+        $query = "SELECT * FROM oncall_weekly WHERE hostname LIKE '%{$search_term}%' AND hide_event = '0' ORDER BY timestamp DESC;";
         break;
     case 'generic_reports':
         $query = "SELECT a.* FROM generic_weekly a, (SELECT max(id) as id, range_start FROM generic_weekly WHERE report like '%{$search_term}%' GROUP BY(range_start)) b WHERE a.id = b.id ORDER BY a.timestamp DESC;";
