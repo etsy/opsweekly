@@ -326,6 +326,27 @@ function getListOfPeopleWithReports() {
     return $people;
 }
 
+// Pull events stored in the database within the given period.
+function getOnCallNotificationsFromDb($range_start, $range_end) {
+    // We store 'timestamp' in the database, but providers refer to the value as 'time'.
+    // Return the value keyed as 'time' so phplib/oncall.php can easily iterate over these
+    // data along with notifications from the defined oncall provider.
+    $query = "SELECT contact, hide_event, hostname, id, notes, output, service, state, tag, timestamp AS time FROM oncall_weekly WHERE timestamp >= '{$range_start}' AND timestamp <= '{$range_end}' ORDER BY time DESC;";
+    $results = db::query($query);
+    return db::fetch_all($results);
+}
+
+function getMostRecentEventTimestampFromDb($range_start, $range_end) {
+    $query = "SELECT timestamp FROM oncall_weekly WHERE timestamp >= '{$range_start}' AND timestamp <= '{$range_end}' ORDER BY timestamp DESC LIMIT 1;";
+    $results = db::query($query);
+    if (db::num_rows($results) == 1) {
+        $result = db::fetch_assoc($results);
+        return $result['timestamp'];
+    } else {
+        return false;
+    }
+}
+
 function handleSearch($search_type, $search_term) {
     switch ($search_type) {
     case 'service':

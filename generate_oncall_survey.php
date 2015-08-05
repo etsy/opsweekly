@@ -21,7 +21,7 @@ $oncall_end_ts = $oncall_start_end[1];
     <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
-        <th>Date/Time</th><th>Host</th><th>Service</th><th>Output</th><th>State</th>
+        <th>Date/Time</th><th>Host</th><th>Service</th><th>Output</th><th>State</th><th>Bulk Change</th><th>Hide Event?</th>
         </tr>
     </thead>
     <tbody>

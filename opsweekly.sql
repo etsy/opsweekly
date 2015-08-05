@@ -15,6 +15,7 @@ CREATE TABLE `oncall_weekly` (
     `sleep_level` int(1) signed,
     `sleep_confidence` int(3) signed,
     `notes` text,
+    `hide_event` tinyint(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     KEY `alert_name` (`alert_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

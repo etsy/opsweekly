@@ -88,8 +88,14 @@ function doSplunkSearch($query, $start, $end, $config, $max_results = 10000) {
         return array("success" => false, "error" => "curl failed, error: " . curl_error($ch) );;
     }
 
-    if (!$json = json_decode($response)) {
-        return array("success" => false, "error" => "JSON decode failed!");
+    $curl_info = curl_getinfo($ch);
+    logline("Splunk provider HTTP status: {$curl_info['http_code']}");
+
+    $json = json_decode($response);
+    if (is_null($json)) {
+        logline("NULL response from Splunk. This likely means no events matched our search criteria.");
+        //return array("success" => false, "error" => "JSON decode failed!");
+        return array("success" => true, "data" => array());
     } else {
         return array("success" => true, "data" => $json);
     }

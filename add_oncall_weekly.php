@@ -51,6 +51,8 @@ if (!db::connect()) {
             $tag = db::escape($n['tag']);
             $notes = db::escape(htmlentities($n['notes'], ENT_QUOTES));
             $alert_id = generateOnCallAlertID($timestamp, $hostname, $service);
+            $hide_event = isset($n['hide_event']) ? '1' : '0';
+            $id = isset($n['id']) ? $n['id'] : false; // Will only be present for events already in the database. Used for UPDATEs.
 
             if ($sleep) {
                 // Run the sleep tracking provider for this alert
@@ -67,7 +69,7 @@ if (!db::connect()) {
             // By default, assume events will be INSERTs. This is important in case
             // we want event versioning and can simply push this string into
             // the $insert_values array to be used in a single INSERT statement.
-            $values = "('$alert_id', '$range_start', '$range_end', '$timestamp', '$hostname', '$service', '$state', '$username', '$output', '$tag', '$sleep_state', '$mtts', '$sleep_level', '$confidence','$notes')";
+            $values = "('$alert_id', '$range_start', '$range_end', '$timestamp', '$hostname', '$service', '$state', '$username', '$output', '$tag', '$sleep_state', '$mtts', '$sleep_level', '$confidence','$notes','$hide_event')";
 
             // If event versioning is not defined or is explicitly enabled...
             if (!$event_versioning || (isset($event_versioning) && (strcmp($event_versioning, "on")) == 0)) {
@@ -97,7 +99,9 @@ if (!db::connect()) {
                                     'mtts'              => $mtts,
                                     'sleep_level'       => $sleep_level,
                                     'sleep_confidence'  => $confidence,
-                                    'notes'             => $notes);
+                                    'notes'             => $notes,
+                                    'hide_event'        => $hide_event,
+                                    'id'                => $id);
                         array_push($update_values, $values);
                     // This is a fresh event.
                     } else {
@@ -110,12 +114,14 @@ if (!db::connect()) {
                 }
     
                 $result->free(); // Free it up, y'all.
+            } else {
+                logline("'event_versioning' appears to be defined but with an unknown value. Check phplib/config.php and be certain it's set to either 'on' or 'off'.");
             }
         }
         // Do we have INSERTs and/or UPDATEs to execute?
         if (count($insert_values) > 0) {
             $insert_values_string = implode(', ', $insert_values);
-            $insert_query = "INSERT INTO oncall_weekly (alert_id, range_start, range_end, timestamp, hostname, service, state, contact, output, tag, sleep_state, mtts, sleep_level, sleep_confidence, notes) VALUES {$insert_values_string}";
+            $insert_query = "INSERT INTO oncall_weekly (alert_id, range_start, range_end, timestamp, hostname, service, state, contact, output, tag, sleep_state, mtts, sleep_level, sleep_confidence, notes, hide_event) VALUES {$insert_values_string}";
             if (!db::query($insert_query)) {
                 echo "Database insert failed, error: " . db::error();
                 logline("Database insert failed, error: " . db::error());
@@ -130,7 +136,8 @@ if (!db::connect()) {
                     array_push($set_columns, "{$column}='{$value}'");
                 }
                 $update_values_string = implode(', ', $set_columns);
-                $update_query = "UPDATE oncall_weekly SET {$update_values_string} WHERE alert_id='{$update_hash['alert_id']}'";
+                // We need to match id because sometimes our providers return duplicate entries where all values match.
+                $update_query = "UPDATE oncall_weekly SET {$update_values_string} WHERE alert_id='{$update_hash['alert_id']}' AND id='{$update_hash['id']}'";
                 if (!db::query($update_query)) {
                     echo "Database update failed, error: " . db::error();
                     logline("Database update failed, error: " . db::error());
