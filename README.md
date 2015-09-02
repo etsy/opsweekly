@@ -26,6 +26,8 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 	* How have their on calls affected them? 
 	* How much sleep do they lose on average? 
 	* How does this compare to others?
+    * Optionally, one can view a sleep retrospective that compares the last several on-call rotations' impact on sleep loss.
+      * In `phplib/config.php`, define `oncall_sleep_retrospective_count` with a numeric value (such as 3). Users viewing their profile will then see how past weeks affected their sleep.
 * **Meeting Mode**: Make running a weekly meeting simple with all the data you need in one page, and a facility for people to take notes. 
 	* Meeting mode hides all UI displaying only information required for the meeting.
 	* The on call report for the previous week is included, along with key stats and elements from report
