@@ -91,56 +91,58 @@ function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $o
     $n_total = count($notifications);
     $timesaver = false;
 
-    foreach ($notifications as $n) {
-        # Add a row that lets the user potentially stop halfway and come back later
-        if ($n_num >= ($n_total / 2) && !$timesaver) {
-            $timesaver = true;
-            $html .= "<tr><td colspan='7'><div class='well'><b>Hey!</b> You made it halfway. If you want you can save up to here and continue later.";
-            $html .= "<button class='btn btn-primary pull-right' type='submit'>Save draft</button></div></td></tr>";
-        }
+    if ($n_total > 1) {
+        foreach ($notifications as $n) {
+            # Add a row that lets the user potentially stop halfway and come back later
+            if ($n_num >= ($n_total / 2) && !$timesaver) {
+                $timesaver = true;
+                $html .= "<tr><td colspan='7'><div class='well'><b>Hey!</b> You made it halfway. If you want you can save up to here and continue later.";
+                $html .= "<button class='btn btn-primary pull-right' type='submit'>Save draft</button></div></td></tr>";
+            }
 
-        // Determine if we need to display a checked box for a hidden event.
-        $hide_checked = $n['hide_event'] ? "checked" : "";
+            // Determine if we need to display a checked box for a hidden event.
+            $hide_checked = $n['hide_event'] ? "checked" : "";
 
-        $pretty_date = date("D d M H:i:s T", $n['time']);
-        if ($n['hide_event']) {
-            $html .= "<tr class='hiddenEvent' style='display:none'>";
-        } else {
-            $html .= "<tr>";
-        }
-        $html .= "<td>{$pretty_date}</td><td>{$n['hostname']}</td><td>{$n['service']}</td><td><pre><small>{$n['output']}</small></pre></td>";
-        $html .= "<td><span class='label label-{$nagios_state_to_badge[$n['state']]}'>{$n['state']}</span></td>";
+            $pretty_date = date("D d M H:i:s T", $n['time']);
+            if ($n['hide_event']) {
+                $html .= "<tr class='hiddenEvent' style='display:none'>";
+            } else {
+                $html .= "<tr>";
+            }
+            $html .= "<td>{$pretty_date}</td><td>{$n['hostname']}</td><td>{$n['service']}</td><td><pre><small>{$n['output']}</small></pre></td>";
+            $html .= "<td><span class='label label-{$nagios_state_to_badge[$n['state']]}'>{$n['state']}</span></td>";
 
-        # Need to populate all the information into hidden fields so we get all the data back nicely when the form is submitted
-        $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][hostname]' value='{$n['hostname']}'>";
-        $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][output]' value='{$n['output']}'>";
-        $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][time]' value='{$n['time']}'>";
-        $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][state]' value='{$n['state']}'>";
-        $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][service]' value='{$n['service']}'>";
-        if ($n['id']) {
-            $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][id]' value='{$n['id']}'>";
+            # Need to populate all the information into hidden fields so we get all the data back nicely when the form is submitted
+            $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][hostname]' value='{$n['hostname']}'>";
+            $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][output]' value='{$n['output']}'>";
+            $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][time]' value='{$n['time']}'>";
+            $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][state]' value='{$n['state']}'>";
+            $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][service]' value='{$n['service']}'>";
+            if ($n['id']) {
+                $html .= "<input type='hidden' name='oncall[notifications][not_{$n_num}][id]' value='{$n['id']}'>";
+            }
+            $html .= "<td><input class='bulk-check' data-num='{$n_num}' type='checkbox'></td>";
+            $html .= "<td><input class='hide-check' data-num='{$n_num}' name='oncall[notifications][not_{$n_num}][hide_event]' type='checkbox' {$hide_checked}></td>";
+            $html .= "</tr>";
+            if ($n['hide_event']) {
+                $html .= "<tr class='hiddenEvent' style='display:none'>";
+            } else {
+                $html .= "<tr>";
+            }
+            $html .= "<td colspan='2'>";
+            # Dropdown that lets the user choose a tag for the alert
+            $html .= "<select name='oncall[notifications][not_{$n_num}][tag]' class='input-xlarge'>";
+            foreach ($nagios_alert_tags as $tag => $tag_name) {
+                //$selected = ($tag == $previous_tag) ? " selected" : "";
+                $selected = ($tag == $n['tag']) ? " selected" : "";
+                $html .= "<option value='{$tag}'{$selected}>{$tag_name}</option>";
+            }
+            $html .= "</select></td>";
+            $html .= "<td colspan='5'><div class='control-group'><label class='control-label'><b>Notes:</b> </label>
+                <div class='controls'><input type='text' name='oncall[notifications][not_{$n_num}][notes]' class='input-xxlarge' placeholder='Notes' value='{$n['notes']}'></div></div></td>";
+            $html .= "</tr>";
+            $n_num++;
         }
-        $html .= "<td><input class='bulk-check' data-num='{$n_num}' type='checkbox'></td>";
-        $html .= "<td><input class='hide-check' data-num='{$n_num}' name='oncall[notifications][not_{$n_num}][hide_event]' type='checkbox' {$hide_checked}></td>";
-        $html .= "</tr>";
-        if ($n['hide_event']) {
-            $html .= "<tr class='hiddenEvent' style='display:none'>";
-        } else {
-            $html .= "<tr>";
-        }
-        $html .= "<td colspan='2'>";
-        # Dropdown that lets the user choose a tag for the alert
-        $html .= "<select name='oncall[notifications][not_{$n_num}][tag]' class='input-xlarge'>";
-        foreach ($nagios_alert_tags as $tag => $tag_name) {
-            //$selected = ($tag == $previous_tag) ? " selected" : "";
-            $selected = ($tag == $n['tag']) ? " selected" : "";
-            $html .= "<option value='{$tag}'{$selected}>{$tag_name}</option>";
-        }
-        $html .= "</select></td>";
-        $html .= "<td colspan='5'><div class='control-group'><label class='control-label'><b>Notes:</b> </label>
-            <div class='controls'><input type='text' name='oncall[notifications][not_{$n_num}][notes]' class='input-xxlarge' placeholder='Notes' value='{$n['notes']}'></div></div></td>";
-        $html .= "</tr>";
-        $n_num++;
     }
     date_default_timezone_set("UTC");
 
