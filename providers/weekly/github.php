@@ -81,7 +81,7 @@ class GithubHints {
         if($this->github_token != false) {
             $url = "{$this->github_url}/api/v3/users/{$this->username}/events?access_token={$this->github_token}";
         } else {
-            $url = "{$this->github_url}/{$this->username}.json";
+            $url = "{$this->github_url}/api/v3/users/{$this->username}/events";
         }
         if (false == ($json = @file_get_contents($url))) {
             return false;
