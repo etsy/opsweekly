@@ -48,7 +48,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
     if ($base_url !== '' && $service_key != '') {
         // convert single Openduty service, to array construct in order to hold multiple services.
         if (!is_array($service_key)) {
-            $service_id = array($service_key);
+            $service_key = array($service_key);
         }
 
         // loop through all Openduty services
@@ -69,7 +69,6 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
                     'since' => date('c', $start),
                     'service_key' => $skey,
                     'until' => date('c', $end),
-                    'offset' => $running_total,
                     'page' => $page
                 );
 
@@ -77,15 +76,18 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
                 if (!$incidents = json_decode($incident_json)) {
                     return 'Could not retrieve incidents from Openduty! Please check your settings';
                 }
+
                 // skip if no incidents are recorded
-                if (count($incidents->incidents) == 0) {
+                if (count($incidents->results) == 0) {
                     continue;
                 }
                 logline("Incidents on Service Key: " . $skey);
                 logline("Total incidents: " . $incidents->count);
                 logline("Number of page:" . $page);
+                $page+=1;
                 $running_total += count($incidents->results);
-                $page++;
+
+
 
                 logline("Running total: " . $running_total);
                 foreach ($incidents->results as $incident) {
