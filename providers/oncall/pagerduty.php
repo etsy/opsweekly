@@ -86,6 +86,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 	    logline("Running total: " . $running_total);
 	    foreach ($incidents->incidents as $incident) {
 		$time = strtotime($incident->created_on);
+		$state = $incident->urgency;
 
 		// try to determine and set the service
 		if (isset($incident->trigger_summary_data->subject)) {
@@ -114,7 +115,7 @@ function getOnCallNotifications($name, $global_config, $team_config, $start, $en
 		  $hostname = "Pagerduty";
 		}
 
-		$notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "CRITICAL");
+		$notifications[] = array("time" => $time, "hostname" => $hostname, "service" => $service, "output" => $output, "state" => "$state");
 	    }
         } while ($running_total < $incidents->total);
       }
