@@ -145,7 +145,7 @@ $weekly_providers = array(
         "class"=> "JIRAHints",
         "options" => array(
             "jira_api_url" => "https://mycompany.atlassian.net/rest/api/latest",
-            "jira_url" => "https://mycompany.atlassian.net.net",
+            "jira_url" => "https://mycompany.atlassian.net",
             "username" => "jira_api_login",
             "password" => "jira_api_password",
         ),
