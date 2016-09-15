@@ -35,6 +35,7 @@ if (isset($_GET['succ'])) {
             <legend>User details</legend>
             <label>Full Name</label><input type="text" placeholder="Bob Robertson" name="full_name" value="<?php echo $profile['full_name']; ?>">
             <label>Jira Username</label><input type="text" placeholder="username@yourcompany.com" name="jira_username" value="<?php echo $profile['jira_username']; ?>">
+            <label>GitHub Username</label><input type="text" placeholder="git_username" name="github_username" value="<?php echo $profile['github_username']; ?>">
             <label>Time Zone</label>
             <select name="timezone">
                 <option></option>

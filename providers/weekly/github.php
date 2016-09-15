@@ -1,5 +1,4 @@
 <?php
-
 /**
  *  A 'weekly' provider, or 'hints' is designed to prompt the
  *  user to remember what they did in the last week, so they can
@@ -17,15 +16,13 @@
  *  inserted into the sidebar of the "add report" page.
  *
  **/
-
 class GithubHints {
     private $github_url;
     private $events_from, $events_to;
     private $username;
-
     public function __construct($username, $config, $events_from, $events_to) {
         $this->github_url = $config['github_url'];
-        $this->username = $username;
+        $this->username = getGithubUsernameFromDb();
         $this->events_from = $events_from;
         $this->events_to = $events_to;
         if(isset($config['github_token'])) {
@@ -34,12 +31,10 @@ class GithubHints {
             $this->github_token = false;
         }
     }
-
     public function printHints() {
         if(!$activities = $this->getGithubActivity()) {
             return insertNotify("error", "No Github activity could be loaded");
         }
-
         if (count($activities) > 0) {
             $html = "<ul>";
             foreach ($activities as $activity) {
@@ -55,7 +50,6 @@ class GithubHints {
                         }
                     }
                 }
-
                 # This block handles requests via api URL
                 if (isset($activity->org->login)) {
                     $friendly_name = $activity->repo->name;
@@ -70,28 +64,21 @@ class GithubHints {
             }
             $html .= "</ul>";
             return $html;
-
         } else {
             return insertNotify("error", "No Github activity could be found and/or loaded");
         }
-
     }
-
     private function getGithubActivity() {
         if($this->github_token != false) {
-            $url = "{$this->github_url}/api/v3/users/{$this->username}/events?access_token={$this->github_token}";
+            $url = "{$this->github_url}/users/{$this->username}/events?access_token={$this->github_token}";
         } else {
-            $url = "{$this->github_url}/api/v3/users/{$this->username}/events";
+            $url = "{$this->github_url}/{$this->username}.json";
         }
-        if (false == ($json = @file_get_contents($url))) {
-            return false;
-        }
-
-        if (false == ($gh_activity = json_decode($json))) {
-            return false;
-        } else {
-            return $gh_activity;
-        }
+        $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
+        $context  = stream_context_create($options);
+        $json = file_get_contents($url, false, $context);
+        $gh_activity = json_decode($json);
+        return $gh_activity;
     }
 }
 ?>
