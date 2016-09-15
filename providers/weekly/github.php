@@ -22,7 +22,12 @@ class GithubHints {
     private $username;
     public function __construct($username, $config, $events_from, $events_to) {
         $this->github_url = $config['github_url'];
-        $this->username = getGithubUsernameFromDb();
+        $ghusername_fromdb = getGithubUsernameFromDb();
+        if (!($ghusername_fromdb == NULL)) {
+            $this->username = getGithubUsernameFromDb();
+        } else {
+            $this->username = $username;
+        }
         $this->events_from = $events_from;
         $this->events_to = $events_to;
         if(isset($config['github_token'])) {
