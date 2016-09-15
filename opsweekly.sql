@@ -48,6 +48,7 @@ CREATE TABLE `meeting_notes` (
 CREATE TABLE `user_profile` (
     `ldap_username` varchar(255) NOT NULL,
     `full_name` varchar(255) NOT NULL,
+    `jira_username` varchar(255) NOT NULL,
     `timezone` varchar(10) NOT NULL,
     `sleeptracking_provider` varchar(255) NOT NULL,
     `sleeptracking_settings` text NOT NULL,

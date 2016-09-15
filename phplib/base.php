@@ -209,6 +209,7 @@ class db {
     static function fetch_all($stmt) {
         if (!self::$dbh) self::connect();
         if (!self::$dbh) return false;
+        $return = [];
         if (self::$dbh instanceof mysqli) {
             while($result = $stmt->fetch_assoc()) {
                 $return[] = $result;
@@ -220,6 +221,13 @@ class db {
         }
         return $return;
     }
+}
+
+function getJiraUsernameFromDb() {
+    $myusername = getUsername();
+    $query = "SELECT jira_username FROM opsweekly.user_profile WHERE ldap_username='{$myusername}';";
+    $results = db::query($query);
+    return db::fetch_assoc($results)['jira_username'];
 }
 
 function insertNotify($level, $message) {

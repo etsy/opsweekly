@@ -26,18 +26,21 @@ class JIRAHints {
     private $jira_context;
 
     public function __construct($username, $config, $events_from, $events_to) {
-        $this->username = $username;
+        $jusername_fromdb = getJiraUsernameFromDb();
+        if (!($jusername_fromdb == NULL)) {
+            $this->username = str_replace('@', '\u0040', getJiraUsernameFromDb());
+        } else {
+            $this->username = $username;
+        }
         $this->events_from = $events_from;
         $this->events_to = $events_to;
         $this->jira_api_url = $config['jira_api_url'];
         $this->jira_url = $config['jira_url'];
-
         $this->jira_context = stream_context_create(array(
             'http' => array(
                 'header'  => "Authorization: Basic " . base64_encode("{$config['username']}:{$config['password']}")
             )
         ));
-
     }
 
     public function printHints() {
@@ -49,7 +52,6 @@ class JIRAHints {
         $search = rawurlencode("assignee = {$user} AND updated >= -{$days}days AND Status != New ORDER BY updated DESC, key DESC");
         $json = file_get_contents("{$this->jira_api_url}/search?jql={$search}", false, $this->jira_context);
         $decoded = json_decode($json);
-
         return $decoded;
     }
 
@@ -59,7 +61,6 @@ class JIRAHints {
         $search = rawurlencode($search);
         $json = file_get_contents("{$this->jira_api_url}/search?jql={$search}", false, $this->jira_context);
         $decoded = json_decode($json);
-
         return $decoded;
     }
 
@@ -84,7 +85,6 @@ class JIRAHints {
         // JIRA wants milliseconds instead of seconds since epoch
         $range_start = $this->events_from * 1000;
         $range_end = $this->events_to * 1000;
-
         $tickets = $this->getJIRAForPeriod($range_start, $range_end);
         if ($tickets->total > 0) {
             $html = "<ul>";
@@ -98,13 +98,7 @@ class JIRAHints {
             # No tickets found
             return insertNotify("error", "No JIRA activity for this period was found");
         }
-
     }
-
 }
 
-
-
-
 ?>
-
