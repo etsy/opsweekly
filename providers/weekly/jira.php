@@ -26,7 +26,12 @@ class JIRAHints {
     private $jira_context;
 
     public function __construct($username, $config, $events_from, $events_to) {
-        $this->username = str_replace('@', '\u0040', getJiraUsernameFromDb());
+        $jusername_fromdb = getJiraUsernameFromDb();
+        if (!($jusername_fromdb == NULL)) {
+            $this->username = str_replace('@', '\u0040', getJiraUsernameFromDb());
+        } else {
+            $this->username = $username;
+        }
         $this->events_from = $events_from;
         $this->events_to = $events_to;
         $this->jira_api_url = $config['jira_api_url'];
