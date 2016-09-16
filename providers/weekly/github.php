@@ -1,4 +1,5 @@
 <?php
+
 /**
  *  A 'weekly' provider, or 'hints' is designed to prompt the
  *  user to remember what they did in the last week, so they can
@@ -16,10 +17,12 @@
  *  inserted into the sidebar of the "add report" page.
  *
  **/
+
 class GithubHints {
     private $github_url;
     private $events_from, $events_to;
     private $username;
+
     public function __construct($username, $config, $events_from, $events_to) {
         $this->github_url = $config['github_url'];
         $ghusername_fromdb = getGithubUsernameFromDb();
@@ -36,6 +39,7 @@ class GithubHints {
             $this->github_token = false;
         }
     }
+
     public function printHints() {
         if(!$activities = $this->getGithubActivity()) {
             return insertNotify("error", "No Github activity could be loaded");
@@ -43,26 +47,29 @@ class GithubHints {
         if (count($activities) > 0) {
             $html = "<ul>";
             foreach ($activities as $activity) {
+                $repo_base = $activity->repo->name; 
+                $date_base = $activity->created_at;
                 # There are other activity types other than commit, but for now we'll pretend they don't exist.
-                # This block handles direct requests to github.com/username.json
+                # This block handles direct requests to github.com/username.json 
                 if (isset($activity->repository->owner)) {
                     $friendly_name = "{$activity->repository->owner}/{$activity->repository->name}";
                     $url_base = "{$activity->repository->url}/commit/";
                     if (isset($activity->payload->shas)) {
                         foreach ($activity->payload->shas as $commit) {
-                            $html .= '<li><a href="' . $url_base . $commit[0] . '" target="_blank">';
-                            $html .= "{$friendly_name}</a> - {$commit[2]}</li>";
+                            if (((strtotime($date_base)) >= $this->events_from) && ((strtotime($date_base)) <= $this->events_to)) {
+                                $html .= '<li><a href="' . $url_base . $commit[0] . '" target="_blank">';
+                                $html .= "{$friendly_name}</a> - {$commit[2]}</li>";
+                            }    
                         }
                     }
                 }
                 # This block handles requests via api URL
-                if (isset($activity->org->login)) {
-                    $friendly_name = $activity->repo->name;
+                if(isset($activity->payload->commits)) {
                     $url_base = "{$this->github_url}/{$activity->repo->name}/commit/";
-                    if(isset($activity->payload->commits)) {
-                        foreach ($activity->payload->commits as $commit) {
+                    foreach ($activity->payload->commits as $commit) {
+                        if (((strtotime($date_base)) >= $this->events_from) && ((strtotime($date_base)) <= $this->events_to)) {
                             $html .= "<li><a href=\"{$url_base}{$commit->sha}\">";
-                            $html .= "{$friendly_name}</a> - {$commit->message}</li>";
+                            $html .= "{$repo_base}</a> - {$commit->message}</li>";
                         }
                     }
                 }
@@ -73,6 +80,7 @@ class GithubHints {
             return insertNotify("error", "No Github activity could be found and/or loaded");
         }
     }
+
     private function getGithubActivity() {
         if($this->github_token != false) {
             $url = "{$this->github_url}/users/{$this->username}/events?access_token={$this->github_token}";
