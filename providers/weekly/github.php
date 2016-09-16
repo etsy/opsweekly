@@ -47,7 +47,6 @@ class GithubHints {
         if (count($activities) > 0) {
             $html = "<ul>";
             foreach ($activities as $activity) {
-                $repo_base = $activity->repo->name; 
                 $date_base = $activity->created_at;
                 # There are other activity types other than commit, but for now we'll pretend they don't exist.
                 # This block handles direct requests to github.com/username.json 
@@ -65,11 +64,12 @@ class GithubHints {
                 }
                 # This block handles requests via api URL
                 if(isset($activity->payload->commits)) {
+                    $friendly_name = $activity->repo->name; 
                     $url_base = "{$this->github_url}/{$activity->repo->name}/commit/";
                     foreach ($activity->payload->commits as $commit) {
                         if (((strtotime($date_base)) >= $this->events_from) && ((strtotime($date_base)) <= $this->events_to)) {
                             $html .= "<li><a href=\"{$url_base}{$commit->sha}\">";
-                            $html .= "{$repo_base}</a> - {$commit->message}</li>";
+                            $html .= "{$friendly_name}</a> - {$commit->message}</li>";
                         }
                     }
                 }
