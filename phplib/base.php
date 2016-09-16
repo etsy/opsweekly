@@ -228,6 +228,7 @@ function getJiraUsernameFromDb() {
     $query = "SELECT jira_username FROM opsweekly.user_profile WHERE ldap_username='{$myusername}';";
     $results = db::query($query);
     return db::fetch_assoc($results)['jira_username'];
+}
 
 function getGithubUsernameFromDb() {
     $myusername = getUsername();
