@@ -230,6 +230,13 @@ function getJiraUsernameFromDb() {
     return db::fetch_assoc($results)['jira_username'];
 }
 
+function getGithubUsernameFromDb() {
+    $myusername = getUsername();
+    $query = "SELECT github_username FROM opsweekly.user_profile WHERE ldap_username='{$myusername}';";
+    $results = db::query($query);
+    return db::fetch_assoc($results)['github_username'];
+}
+
 function insertNotify($level, $message) {
     return '<div class="alert alert-' . $level .'">' . $message . '<a class="close" data-dismiss="alert" href="#">&times;</a></div>';
 }

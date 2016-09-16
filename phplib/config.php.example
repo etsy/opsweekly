@@ -136,7 +136,8 @@ $weekly_providers = array(
         "lib" => "providers/weekly/github.php",
         "class" => "GithubHints",
         "options" => array(
-            "github_url" => "https://github.com",
+            "github_url" => "https://api.github.com",
+            "github_token" => "yourgithubtoken",
         ),
     ),
     "jira" => array(
