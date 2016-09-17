@@ -72,7 +72,7 @@ $teams = array(
             "start" => "friday 18:00",
             "end" => "friday 18:00",
         ),
-        "weekly_hints" => array("jira", "github"),
+        "weekly_hints" => array("jira", "github", "bitbucket"),
         "irc_channel" => "#ops"
     ),
     "anotherweekly.mycompany.com" => array(
@@ -149,6 +149,18 @@ $weekly_providers = array(
             "jira_url" => "https://mycompany.atlassian.net",
             "username" => "jira_api_login",
             "password" => "jira_api_password",
+        ),
+    ),
+    "bitbucket" => array(
+        "display_name" => "Bitbucket Activity",
+        "lib" => "providers/weekly/bitbucket.php",
+        "class" => "BitbucketHints",
+        "options" => array(
+            "bitbucket_api_url" => "https://api.bitbucket.org/2.0",
+            "bitbucket_team" => "yourteam",
+            "bitbucket_user" => "bitbucket_user",
+            /* "bitbucket_password" => "bitbucket_password", /* Enable this only if you want to use basic authentication */
+            "bitbucket_app_password" => "bitbucket_app_password",
         ),
     ),
     "example" => array(
