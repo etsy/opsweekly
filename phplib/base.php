@@ -225,21 +225,21 @@ class db {
 
 function getJiraUsernameFromDb() {
     $myusername = getUsername();
-    $query = "SELECT jira_username FROM opsweekly.user_profile WHERE ldap_username='{$myusername}';";
+    $query = "SELECT jira_username FROM user_profile WHERE ldap_username='{$myusername}';";
     $results = db::query($query);
     return db::fetch_assoc($results)['jira_username'];
 }
 
 function getGithubUsernameFromDb() {
     $myusername = getUsername();
-    $query = "SELECT github_username FROM opsweekly.user_profile WHERE ldap_username='{$myusername}';";
+    $query = "SELECT github_username FROM user_profile WHERE ldap_username='{$myusername}';";
     $results = db::query($query);
     return db::fetch_assoc($results)['github_username'];
 }
 
 function getBitbucketUsernameFromDb() {
     $myusername = getUsername();
-    $query = "SELECT bitbucket_username FROM opsweekly.user_profile WHERE ldap_username='{$myusername}';";
+    $query = "SELECT bitbucket_username FROM user_profile WHERE ldap_username='{$myusername}';";
     $results = db::query($query);
     return db::fetch_assoc($results)['bitbucket_username'];
 }
