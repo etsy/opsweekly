@@ -237,6 +237,13 @@ function getGithubUsernameFromDb() {
     return db::fetch_assoc($results)['github_username'];
 }
 
+function getBitbucketUsernameFromDb() {
+    $myusername = getUsername();
+    $query = "SELECT bitbucket_username FROM opsweekly.user_profile WHERE ldap_username='{$myusername}';";
+    $results = db::query($query);
+    return db::fetch_assoc($results)['bitbucket_username'];
+}
+
 function insertNotify($level, $message) {
     return '<div class="alert alert-' . $level .'">' . $message . '<a class="close" data-dismiss="alert" href="#">&times;</a></div>';
 }
