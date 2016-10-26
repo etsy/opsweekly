@@ -150,6 +150,18 @@ class db {
         return true;
     }
 
+    static function prepare_and_execute($query) {
+        if (!self::$dbh) self::connect();
+        if (!self::$dbh) return false;
+        if (self::$dbh instanceof mysqli) {
+            $stmt = self::$dbh->prepare($query);
+            return $stmt->execute();
+        } else {
+            return mysql_query($query, self::$dbh);
+        }
+    }
+
+
     static function query($query) {
         if (!self::$dbh) self::connect();
         if (!self::$dbh) return false;

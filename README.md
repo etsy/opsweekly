@@ -64,6 +64,17 @@ Alert classification is a complicated task, but with Opsweekly a few simple ques
 1. Load Opsweekly in your browser
 1. Reward yourself with a refreshing beverage.
 
+## Upgrading
+We're careful to only allow changes that should be backwards compatible with previous versions of opsweekly, 
+e.g. if a new configuration value is added, a sensible default is included, etc. 
+
+Having said that, sometimes database schema changes are required. The script `upgrade_db.php` will attempt to
+alter your tables for those schema changes; if it fails, you can copy and paste the SQL and run manually. 
+Re-running the `upgrade_db.php` more than once will not break your database. 
+
+*Commiters/Maintainers*: If you add a new database column, please add your schema change to `upgrade_db.php`
+so existing users can enjoy the features you add!
+
 ## Providers/Plugins
 Opsweekly uses the concept of "providers" for the various pieces of data it needs. 
 These are like plugins and can vary from team to team. 
