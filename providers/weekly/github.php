@@ -85,7 +85,7 @@ class GithubHints {
         if($this->github_token != false) {
             $url = "{$this->github_url}/users/{$this->username}/events?access_token={$this->github_token}";
         } else {
-            $url = "{$this->github_url}/{$this->username}.json";
+            $url = "{$this->github_url}/users/{$this->username}/events";
         }
         $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
         $context  = stream_context_create($options);
