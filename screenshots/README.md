@@ -1,6 +1,6 @@
 # Homepage
 
-Where else to start? The homepage provides an overview of the week chosen, with Meeting Notes first (if taken yet for that week), then the on call report rows, and finally the user reports
+Where else to start? The homepage provides an overview of the week chosen, with Meeting Notes first (if taken yet for that week), then the on call report rows, and finally the user reports.
 
 The date picker and 'add report' button are prominent here, as well as a dropdown that allows viewing just a single person's reports.
 
