@@ -120,7 +120,7 @@ The personal report also features some visualisations of their personal on call 
 
 
 
-Opsweekly can also help faciliate weekly meetings in a way that helps the whole team. The "meeting view" is especially designed to help a meeting organiser run a meeting and easily leave notes that are then recorded and displayed on that week's homepage. 
+Opsweekly can also help facilitate weekly meetings in a way that helps the whole team. The "meeting view" is especially designed to help a meeting organiser run a meeting and easily leave notes that are then recorded and displayed on that week's homepage. 
 
 ![Meeting View](meeting_view_1.png?raw=true "Meeting View")
 
