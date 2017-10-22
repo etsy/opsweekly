@@ -4,7 +4,7 @@ Where else to start? The homepage provides an overview of the week chosen, with 
 
 The date picker and 'add report' button are prominent here, as well as a dropdown that allows viewing just a single person's reports.
 
-Note in the header: 
+Note in the header:
 
 * Another datepicker
 * The ability to change the Timezone of the UI
@@ -64,7 +64,7 @@ If the user has sleep tracking enabled, we're then given a breakdown of that per
 
 As the report continues, it then display:
 
-* Top notifiying hosts - Which hosts were the nosiest?
+* Top notifying hosts - Which hosts were the nosiest?
 * Top notifying services - Which services were the nosiest?
 * Alert volume per day - Which day was the nosiest?
 * Notification time map - A heat map displaying the alerts received during the week over time.
