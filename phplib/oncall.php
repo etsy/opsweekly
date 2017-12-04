@@ -91,7 +91,7 @@ function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $o
     $n_total = count($notifications);
     $timesaver = false;
 
-    if ($n_total > 1) {
+    if ($n_total >= 1) {
         foreach ($notifications as $n) {
             # Add a row that lets the user potentially stop halfway and come back later
             if ($n_num >= ($n_total / 2) && !$timesaver) {
