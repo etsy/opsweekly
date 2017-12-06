@@ -57,7 +57,7 @@ function printOnCallNotifications($on_call_name, $start, $end, $oncall_start, $o
         logline("getOnCallNotifications returned an empty array! Continuing with the events stored in the database.");
         $notifications = $notifications_from_db;
     } else {
-        logline("getOnCallNotifications returned an array containing ". count($notifications) . " notifications");
+        logline("getOnCallNotifications returned an array containing ". count($notifications_from_provider) . " notifications");
         if (empty($notifications_from_db)) {
             // This is probably the first time the on-call engineer started writing the report so nothing is stored in the database.
             $notifications = $notifications_from_provider;
